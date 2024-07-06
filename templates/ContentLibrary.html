@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}
+<title>Content Library</title>
+{% endblock title %}
+
+{% block main %}
+<div class="col">
+    <div class="library-section">
+        <!-- Library Item -->
+        {% for doc in documents %}
+        <!-- Library Item -->
+        <div class="col-4">
+            <div class="library-item">
+                <img src="{{ url_for('static', filename=doc.image_path) }}" width="250px" height="200px">
+                <div id="popBox">
+                    <h2>{{ doc.title }}</h2>
+                    <p>{{ doc.description }}</p>
+                    <!-- Assuming you have a link to view the document -->
+                    <a href="{{ url_for('download_document', document_id=doc.id) }}" class="btn btn-primary"
+                        target="_blank">View Document</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock main%}

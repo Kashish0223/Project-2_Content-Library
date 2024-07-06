@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Form</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/login_style.css') }}">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <script>
+    function validateForm() {
+        var username = document.forms["registerForm"]["username"].value;
+        var email = document.forms["registerForm"]["email"].value;
+        var password = document.forms["registerForm"]["password"].value;
+        var role = document.forms["registerForm"]["role"].value;
+        if (username == "" || email == "" || password == "" || role == "") {
+            alert("All fields must be filled out");
+            return false;
+        }
+        return true;
+    }
+  </script>
+</head>
+<body>
+  <div class="wrapper">
+    <form action="/register" name="registerform" method="post" onsubmit="return validateForm()">
+      <h1>Register</h1>
+      <div class="input-box">
+        <input type="text" placeholder="Username" autocomplete="on" name="username" required>
+        <i class='bx bxs-user'></i>
+      </div>
+      <div class="input-box">
+        <input type="email" placeholder="email" autocomplete="on" name="email" required>
+        <i class='bx bxs-email'>@</i>
+      </div>
+      <div class="input-box">
+        <input type="password" placeholder="Password" autocomplete="on" name="password" required>
+        <i class='bx bxs-lock-alt' ></i>
+      </div>
+      <div class="input-box">
+        <select name="role" id="role" style="padding:10px 24px 10px 20px">
+            <option value="">Select the role</option>
+            <option value="student">Student</option>
+            <option value="teacher">Teacher</option>
+        </select>
+        <!-- <i class='bx bxs-lock-alt' ></i> -->
+      </div>
+      <button type="submit" name="submit" class="btn">Register</button>
+      <p>Already have an account?<a href="/login"> Login</a></p>
+    </form>
+  </div>
+</body>
+</html>

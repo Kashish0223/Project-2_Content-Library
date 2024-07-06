@@ -1,0 +1,55 @@
+{% extends "parent.html" %}
+{% block title %}
+<title>Add_Module</title>
+{% endblock title %}
+
+{% block main %}
+<div class="col-8">
+  <div class="contact-container">
+    <div class="contact-header">
+      <h4>Add Module</h4>
+    </div>
+    <form class="contact-form" action="/add_module" method="post">
+      <label for="title">Module Name</label>
+      <input type="text" id="title" name="title">
+      <label for="description">Module Description</label>
+      <input type="text" id="description" name="description">
+      <label for="course">Course</label>
+      <select name="course" id="course">
+        <option value="">Select a course</option>
+        {% for course in courses %}
+        <option value="{{ course.id }}">{{ course.ctitle }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" name="submit">Submit</button>
+    </form>
+  </div>
+  <div class="container">
+    <table class="table text-center border border-dark">
+      <thead>
+        <tr>
+          <th scope="col" class="bg-dark text-light">Id</th>
+          <th scope="col" class="bg-dark text-light">Module Title</th>
+          <th scope="col" class="bg-dark text-light">Module Description</th>
+          <th scope="col" class="bg-dark text-light">Course</th>
+          <th scope="col" class="bg-dark text-light">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for module in allModule %}
+        <tr>
+          <td scope="row">{{module.id}}</td>
+          <td>{{module.title}}</td>
+          <td>{{module.description}}</td>
+          <td>{{module.course.ctitle}}</td>
+          <td>
+            <a href="/modupdate?id={{module.id}}" class="btn btn-primary">Update</a>
+            <a href="/moddelete?id={{module.id}}" class="btn btn-secondary">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock main %}

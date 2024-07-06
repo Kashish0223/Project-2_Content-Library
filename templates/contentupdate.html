@@ -1,0 +1,36 @@
+{% extends "parent.html" %}
+{% block title %}
+<title>Update_Content</title>
+{% endblock title %}
+
+{% block main %}
+<div class="col-8">
+    <div class="contact-container">
+        <div class="contact-header">
+            <h3>Update Content</h3>
+        </div>
+        <form class="contact-form" action="/contentupdate?id={{ reqcontent.id }}" method="post" enctype="multipart/form-data">
+            <label for="img">Image</label>
+            <input type="file" id="img" name="img">
+            
+            <label for="ctitle">Content Title</label>
+            <input type="text" id="ctitle" name="ctitle" value="{{ reqcontent.title }}">
+            
+            <label for="cldesc">Content Description</label>
+            <input type="text" id="cldesc" name="cldesc" value="{{ reqcontent.description }}">
+            
+            <label for="docu">Upload Document</label>
+            <input type="file" id="docu" name="docu">
+            
+            <label for="course">Course Name</label>
+            <select name="course" id="course">
+                <option value="">Select a course</option>
+                {% for course in courses %}
+                <option value="{{ course.id }}" {% if course.id == reqcontent.course_id %}selected{% endif %}>{{ course.ctitle }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" name="submit">Submit</button>
+        </form>
+    </div>
+</div>
+{% endblock main %}

@@ -1,0 +1,28 @@
+{% extends "parent.html" %}
+{% block title %}
+<title>Update_Module</title>
+{% endblock title %}
+
+{% block main %}
+<div class="col-8">
+  <div class="contact-container">
+    <div class="contact-header">
+      <h4>Update Module</h4>
+    </div>
+    <form class="contact-form" action="/modupdate?id={{ reqmod.id }}" method="post">
+      <label for="title">Module Name</label>
+      <input type="text" id="title" name="title" value="{{ reqmod.title }}">
+      <label for="description">Module Description</label>
+      <input type="text" id="description" name="description" value="{{ reqmod.description }}">
+      <label for="course">Course</label>
+      <select name="course" id="course">
+        <option value="">Select a course</option>
+        {% for course in courses %}
+        <option value="{{ course.id }}" {% if course.id == reqmod.course_id %}selected{% endif %}>{{ course.ctitle }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" name="submit">Submit</button>
+    </form>
+  </div>
+</div>
+{% endblock main %}
