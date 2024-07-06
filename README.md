@@ -33,27 +33,32 @@ The Content Library Project is a web application designed for managing education
 - **Backend:** Flask
 - **Database:** SQLAlchemy
 
+
 ## Project Structure
 
 ```plaintext
 ContentLibrary/
 ├── backend/
-│   ├── Scripts/
+│   ├── Scripts/                                 # Template of backend file
 │   └── ...
 ├── instance/
-│   └── library/
+│   └── library/                                  # Database file
 ├── templates/
-│   ├── student/
-│   ├── admin/
-│   ├── parent/
-│   ├── base/
-│   ├── product/
-│   ├── about_us/
-│   ├── contact_us/
-│   ├── content_media_library/
-│   ├── add_courses/
-│   ├── add_content/
-│   ├── add_module/
+│   ├── login/                                    # Template of login teacher/student
+│   ├── register/                                 # Template of register teacher/student
+│   ├── parent/                                   # Template of teacher's index page
+│   ├── base/                                     # Template of student's index page
+│   ├── product/                                  # Template of product page
+│   ├── about_us/                                 # Template of about us page
+│   ├── contact_us/                               # Template of contact us page
+│   ├── content_media_library/                    # Template of content media library page
+│   ├── add_courses/                              # Template of add_courses page
+│   ├── add_content/                              # Template of add_content page
+│   ├── add_module/                               # Template of add_module page
+│   ├── coupdate/                                 # Template of coupdate page
+│   ├── contentupdate/                            # Template of contentupdate page
+│   ├── modupdate/                                # Template of modupdate page
+│
 ├── static/
 │   ├── css/
 │   │   ├── login_style/
@@ -63,65 +68,61 @@ ContentLibrary/
 │   │   └── script/
 │   ├── images/
 │   └── documents/
+│
 ├── app.py
 ├── database.py
-├── ...
+├── extension.py
+├── module.py
 └── README.md
-```
-
-
 
 ## Setup Instructions
-
 1. **Folder Path:**
-    ```bash
+    
     E:\>
     cd SummerProject2
-    ```
+
 
 2. **Create a Backend Environment:**
-    ```bash
+
     python -m venv backend
-    ```
+
 
 3. **Activate the Environment:**
-    ```bash
+    
     backend\Scripts\activate
-    ```
+
 
 4. **Install Flask and SQLAlchemy:**
-    ```bash
+    
     pip install flask
     pip install flask_sqlalchemy
-    ```
+
 
 5. **Set Up the Database:**
     - Define your database URI in the configuration file.
     - Create the database tables:
-      ```python
-      >>> from app import db
-      >>> db.create_all()
-      >>> exit()
-      ```
+
+          from app import db
+          db.create_all()
+          exit()
+
 
 ## Usage
 
 1. **Run the Application:**
-    ```bash
-    python app.py
-    ```
 
-2. **Access the Application:**
-    - Open your web browser and navigate to `http://127.0.0.1:5000/`
+    python app.py
+
+2. **Access the Application:**                                                                                    - Open your web browser and navigate to http://127.0.0.1:5000/
 
 ## Contributing
 
 1. Fork the repository.
-2. Create your feature branch: `git checkout -b feature/my-new-feature`
-3. Commit your changes: `git commit -am 'Add some feature'`
-4. Push to the branch: `git push origin feature/my-new-feature`
+2. Create your feature branch: git checkout -b feature/my-new-feature
+3. Commit your changes: git commit -am 'Add some feature'
+4. Push to the branch: git push origin feature/my-new-feature
 5. Submit a pull request.
 
 ## Contact
 
-- **Author:** Kashish Sharma
+- **Author:** Kashish Sharma   
