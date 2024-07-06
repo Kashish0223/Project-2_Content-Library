@@ -69,11 +69,11 @@ ContentLibrary/
 │   ├── images/
 │   └── documents/
 │
-├── app.py
-├── database.py
-├── extension.py
-├── module.py
-└── README.md
+├── app.py                                         # Application 
+├── database.py                                    # Create the database
+├── extension.py                                   # Connection file of database
+├── module.py                                      # Schema of the tables
+└── README.md                                     
 ```
 
 ## Setup Instructions
