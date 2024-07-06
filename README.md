@@ -36,41 +36,42 @@ The Content Library Project is a web application designed for managing education
 ## Project Structure
 ContentLibrary/
 │
-├── backend/ # Backend environment
-│ ├── Scripts/ # Activation scripts for the virtual environment
-│ ├── ...
+├── backend/                 # Backend environment
+│   ├── Scripts/             # Activation scripts for the virtual environment
+│   ├── ...
 │
-├── instance/ # Backend environment
-│ ├── library/ # Database file
+├── instance/                # Backend environment
+│   ├── library/             # Database file
 │
-├── templates/ # HTML templates
-│ ├── student/ # Templates for student pages
-│ ├── admin/ # Templates for admin/teacher pages
-│ ├── parent/ # Templates for admin/teacher pages
-│ ├── base/ # Templates for student pages
-│ ├── product/ # Templates for product pages
-│ ├── about_us/ # Templates for about us pages
-│ ├── contact_us/ # Templates for contact us pages
-│ ├── content_media_library/ # Templates for content media pages
-│ ├── add_courses/ # Templates for add courses pages
-│ ├── add_content/ # Templates for add content pages
-│ ├── add_module/ # Templates for add module page
+├── templates/               # HTML templates
+│   ├── student/             # Templates for student pages
+│   ├── admin/               # Templates for admin/teacher pages
+│   ├── parent/              # Templates for parent pages
+│   ├── base/                # Templates for student pages
+│   ├── product/             # Templates for product pages
+│   ├── about_us/            # Templates for about us pages
+│   ├── contact_us/          # Templates for contact us pages
+│   ├── content_media_library/  # Templates for content media pages
+│   ├── add_courses/         # Templates for add courses pages
+│   ├── add_content/         # Templates for add content pages
+│   ├── add_module/          # Templates for add module page
 │
-├── static/ # Static files (CSS, JS, images, documents)
-│ ├── css/
-│ │ ├── login_style/
-│ │ ├── base_style/
-│ │ ├── style/
-│ ├── js/
-│ │ ├── script/
-│ ├── images/
-│ ├── documents/
+├── static/                  # Static files (CSS, JS, images, documents)
+│   ├── css/
+│   │   ├── login_style/
+│   │   ├── base_style/
+│   │   ├── style/
+│   ├── js/
+│   │   ├── script/
+│   ├── images/
+│   ├── documents/
 │
-├── app.py # Main Flask application file
-├── database.py # Database models
+├── app.py                   # Main Flask application file
+├── database.py              # Database models
 ├── ...
 │
-└── README.md # Project README file
+└── README.md                # Project README file
+
 
 ## Setup Instructions
 
