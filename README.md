@@ -35,8 +35,6 @@ The Content Library Project is a web application designed for managing education
 
 ## Project Structure
 
-## Project Structure
-
 ```plaintext
 ContentLibrary/
 ├── backend/
