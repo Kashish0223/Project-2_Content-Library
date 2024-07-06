@@ -35,43 +35,40 @@ The Content Library Project is a web application designed for managing education
 
 ## Project Structure
 
+## Project Structure
+
+```plaintext
 ContentLibrary/
-│
-├── backend/                 # Backend environment
-│   ├── Scripts/             # Activation scripts for the virtual environment
-│   ├── ...
-│
-├── instance/                # Backend environment
-│   ├── library/             # Database file
-│
-├── templates/               # HTML templates
-│   ├── student/             # Templates for student pages
-│   ├── admin/               # Templates for admin/teacher pages
-│   ├── parent/              # Templates for parent pages
-│   ├── base/                # Templates for student pages
-│   ├── product/             # Templates for product pages
-│   ├── about_us/            # Templates for about us pages
-│   ├── contact_us/          # Templates for contact us pages
-│   ├── content_media_library/  # Templates for content media pages
-│   ├── add_courses/         # Templates for add courses pages
-│   ├── add_content/         # Templates for add content pages
-│   ├── add_module/          # Templates for add module page
-│
-├── static/                  # Static files (CSS, JS, images, documents)
+├── backend/
+│   ├── Scripts/
+│   └── ...
+├── instance/
+│   └── library/
+├── templates/
+│   ├── student/
+│   ├── admin/
+│   ├── parent/
+│   ├── base/
+│   ├── product/
+│   ├── about_us/
+│   ├── contact_us/
+│   ├── content_media_library/
+│   ├── add_courses/
+│   ├── add_content/
+│   ├── add_module/
+├── static/
 │   ├── css/
 │   │   ├── login_style/
 │   │   ├── base_style/
-│   │   ├── style/
+│   │   └── style/
 │   ├── js/
-│   │   ├── script/
+│   │   └── script/
 │   ├── images/
-│   ├── documents/
-│
-├── app.py                   # Main Flask application file
-├── database.py              # Database models
+│   └── documents/
+├── app.py
+├── database.py
 ├── ...
-│
-└── README.md                # Project README file
+└── README.md
 
 
 
