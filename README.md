@@ -74,55 +74,59 @@ ContentLibrary/
 ├── extension.py
 ├── module.py
 └── README.md
+```
 
 ## Setup Instructions
+
 1. **Folder Path:**
-    
+    ```bash
     E:\>
     cd SummerProject2
-
+    ```
 
 2. **Create a Backend Environment:**
-
+    ```bash
     python -m venv backend
-
+    ```
 
 3. **Activate the Environment:**
-    
+    ```bash
     backend\Scripts\activate
-
+    ```
 
 4. **Install Flask and SQLAlchemy:**
-    
+    ```bash
     pip install flask
     pip install flask_sqlalchemy
-
+    ```
 
 5. **Set Up the Database:**
     - Define your database URI in the configuration file.
     - Create the database tables:
-
-          from app import db
-          db.create_all()
-          exit()
-
+      ```python
+      >>> from app import db
+      >>> db.create_all()
+      >>> exit()
+      ```
 
 ## Usage
 
 1. **Run the Application:**
-
+    ```bash
     python app.py
+    ```
 
-2. **Access the Application:**                                                                                    - Open your web browser and navigate to http://127.0.0.1:5000/
+2. **Access the Application:**
+    - Open your web browser and navigate to `http://127.0.0.1:5000/`
 
 ## Contributing
 
 1. Fork the repository.
-2. Create your feature branch: git checkout -b feature/my-new-feature
-3. Commit your changes: git commit -am 'Add some feature'
-4. Push to the branch: git push origin feature/my-new-feature
+2. Create your feature branch: `git checkout -b feature/my-new-feature`
+3. Commit your changes: `git commit -am 'Add some feature'`
+4. Push to the branch: `git push origin feature/my-new-feature`
 5. Submit a pull request.
 
 ## Contact
 
-- **Author:** Kashish Sharma   
+- **Author:** Kashish Sharma
