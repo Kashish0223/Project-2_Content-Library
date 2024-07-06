@@ -34,6 +34,7 @@ The Content Library Project is a web application designed for managing education
 - **Database:** SQLAlchemy
 
 ## Project Structure
+
 ContentLibrary/
 │
 ├── backend/                 # Backend environment
@@ -71,6 +72,8 @@ ContentLibrary/
 ├── ...
 │
 └── README.md                # Project README file
+
+
 
 
 ## Setup Instructions
