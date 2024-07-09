@@ -142,7 +142,7 @@ margin-bottom: 20px;
   justify-content: space-between;
 }
 
-.library-item {
+/* .library-item {
   background-color: #fff;
   padding: 20px;
   margin: 10px;
@@ -150,6 +150,13 @@ margin-bottom: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   flex-basis: calc(33.333% - 20px);
   box-sizing: border-box;
+} */
+
+.library-item {
+  display: inline-block;
+  margin: 10px;
+  cursor: pointer;
+  position: relative;
 }
 
 .library-item h2 {
@@ -358,7 +365,7 @@ margin-bottom: 20px;
     margin-bottom: 10px;
   }
 
-  .contact-form input[type="text"], .contact-form input[type="email"], .contact-form input[type="date" i], .contact-form input[type="file" i] {
+  .contact-form input[type="text"], .contact-form input[type="email"], .contact-form input[type="date" i], .contact-form input[type="file" i],select {
     width: 100%;
     height: 40px;
     margin-bottom: 20px;
