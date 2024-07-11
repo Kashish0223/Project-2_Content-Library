@@ -11,7 +11,7 @@
     background: #d5e0e8;
   }
 
-  /**Login css start**/
+/**Login css start**/
 .login-btn {
   background-color: #4CAF50;
   color: #fff;
@@ -166,13 +166,10 @@ margin-bottom: 20px;
 .index{
   background-color: #d5e0e8;
   padding: 20px;
-  /* margin: 10px; */
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  /* flex-basis: calc(33.333% - 20px); */
   box-sizing: border-box;
 }
-
 
 .product-list, .about-us, .contact-us {
     background: #fff;
@@ -438,3 +435,56 @@ th{
   background-color: #3498db;
   animation: pulse 1s infinite;
 }
+/*******---------Tabs CSS Start---------*******/
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+/* Style the a tag inside the tab */
+.tab a {
+  background-color: inherit;
+  float: left;
+  color: #d5e0e8;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+  margin: 0;
+  text-decoration: none;
+  border-bottom: 0;
+}
+
+/* Change background color of a tag on hover */
+.tab a:hover {
+  background-color: #d5e0e8;
+  color:#0b0b2c;
+  border-bottom: 0;
+}
+
+/*******---------Tabs CSS End---------*******/
+
+/*******---------Video CSS Start---------*******/
+.video-thumbnail {
+  position: relative;
+  cursor: pointer;
+}
+
+.play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+.video-container {
+  display: none;
+  margin-top: 10px;
+}
+/*******---------Video CSS End---------*******/
