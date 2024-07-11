@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request,redirect, send_from_directory,url_for,session, flash
 from extension import database
-from model import User, Course, Document,Module
+from model import User, Course, Document, Module, Video
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
@@ -16,8 +16,12 @@ database.init_app(app)
 
 # Set the directory where the static files are stored
 UPLOAD_FOLDER = 'static/images'
+UPLOAD_VIDEO = 'static/videos'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
+app.config['UPLOAD_VIDEO'] = UPLOAD_VIDEO
+# app.config['UPLOAD_VIDEO'] = os.path.join(app.root_path, 'static', 'videos')
+
+ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png','mp4'}
 
 # Set the directory where the static documents are stored
 UPLOAD_DOCUMENT = 'static/documents'
@@ -281,7 +285,8 @@ def library():
         flash('You do not have access to this page.', 'danger')
         return redirect('/login')
     documents = Document.query.all()
-    return render_template('ContentLibrary.html', documents=documents)
+    all_video = Video.query.all()
+    return render_template('ContentLibrary.html',all_video=all_video, documents=documents)
 
 @app.route('/add_content', methods=['GET', 'POST'])
 def add_content():
@@ -316,13 +321,14 @@ def add_content():
         # Fetch the courses and render the template
         courses = Course.query.with_entities(Course.id, Course.ctitle)
         documents = Document.query.all()
-        return render_template('add_content.html', courses=courses, documents=documents)
+        all_video = Video.query.all()
+        return render_template('add_content.html', courses=courses, documents=documents,all_video=all_video)
 
 @app.route('/contentdelete')
 def contentdelete():
-   if 'role' not in session or session['role'] != 'teacher':
-        flash('You do not have access to this page.', 'danger')
-        return redirect('/login')
+#    if 'role' not in session or session['role'] != 'teacher':
+#         flash('You do not have access to this page.', 'danger')
+#         return redirect('/login')
    # extract the id
    serial_number = request.args.get('id')
 
@@ -368,14 +374,57 @@ def contentupdate():
 
 @app.route('/download_document/<int:document_id>')
 def download_document(document_id):
-    if 'role' not in session or session['role'] != 'teacher':
-        flash('You do not have access to this page.', 'danger')
-        return redirect('/login')
     doc = Document.query.get_or_404(document_id)
     # Logic to serve/download the document file
     return send_from_directory(app.config['UPLOAD_FOLDER'],  os.path.basename(doc.document_path))
+if not os.path.exists(app.config['UPLOAD_FOLDER']):
+    os.makedirs(app.config['UPLOAD_FOLDER'])
 
 ##############---------Content Library Route End---------################
+
+##############---------Video Route Start---------################
+@app.route('/add_videos', methods=['POST', 'GET'])
+def add_videos():
+    if request.method == 'POST':
+        video_title = request.form['video_title']
+        video_id = request.form['video_id']
+        
+        # Handle file upload
+        thumbnail = request.files['thumbnail_path']
+
+        if thumbnail:
+            thumbnail_filename = secure_filename(thumbnail.filename)
+            thumbnail_path = os.path.join('videos', thumbnail_filename).replace('\\', '/')
+           
+            thumbnail.save(os.path.join(app.config['UPLOAD_VIDEO'], thumbnail_filename))
+            new_video = Video(video_title=video_title, thumbnail_path=thumbnail_path, video_id=video_id)
+            database.session.add(new_video)
+            database.session.commit()
+            return redirect(url_for('add_videos'))
+        else:
+            flash('No file part', 'danger')
+            return redirect(url_for('add_videos'))
+
+    else:
+        all_video = Video.query.all()
+        return render_template('add_videos.html', all_video=all_video)
+
+@app.route('/videodelete')
+def videodelete():
+#    if 'role' not in session or session['role'] != 'teacher':
+#         flash('You do not have access to this page.', 'danger')
+#         return redirect('/login')
+   # extract the id
+   serial_number = request.args.get('id')
+
+   # extract the id
+   video_id = Video.query.filter_by(id=serial_number).first()
+
+   database.session.delete(video_id)
+   database.session.commit()
+
+   return redirect("/add_videos")  
+
 if __name__ == '__main__':
   # Run the application
-  app.run(debug = True)
+  app.run()

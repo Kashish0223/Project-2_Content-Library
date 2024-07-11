@@ -95,7 +95,7 @@ nav ul {
   .col-8{
     width: 79%;
     float: right;
-    padding: 20px;
+    padding: 6px;
     border-radius: 8px;
     background-color: #d5e0e8;
   }
@@ -265,7 +265,7 @@ margin-bottom: 20px;
   .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
+    /* padding: 20px; */
   }
 
   .product-header {
@@ -402,8 +402,8 @@ margin-bottom: 20px;
 /***********--------Table-------*************/
 table{
   border: 2px solid #000;
-  padding: 6px;
-  margin: 0 0px 0px 50px; 
+  /* padding: 2px; */
+  /* margin: 0 0px 0px 50px;  */
 }
 td{
   padding: 10px;

@@ -4,22 +4,119 @@
 {% endblock title %}
 
 {% block main %}
-<div class="index container mt-5">
-  <div class="row">
-      {% for doc in documents %}
-      <div class="col-md-4 mb-4">
-          <div class="card h-100 library-item">
-              <img src="{{ url_for('static', filename=doc.image_path) }}" class="card-img-top" alt="{{ doc.title }}">
-              <div class="card-body">
-                  <h5 class="card-title">{{ doc.title }}</h5>
-                  <div class="popBox">
-                      <p class="card-text">{{ doc.description }}</p>
-                  </div>
-                  <a href="{{ url_for('download_document', document_id=doc.id) }}" class="btn btn-primary pulse" target="_blank">View Document</a>
-              </div>
-          </div>
-      </div>
-      {% endfor %}
-  </div>
+<div class="tab" style="background-color: #0b0b2c;">
+    <a href="#module" class="text-center">Module</a>
+    <a href="#courses" class="text-center">Courses</a>
+    <a href="#video" class="text-center">Videos</a>
 </div>
+<div class="index container-fluid mt-3 pl-3">
+    <!-- Module Section -->
+    <h1 class="text-center" id="module">Our Modules</h1>
+    <div class="row">
+        {% for doc in documents %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 library-item">
+                <img src="{{ url_for('static', filename=doc.image_path) }}" class="card-img-top" alt="{{ doc.title }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ doc.title }}</h5>
+                    {% if doc.course %}
+                    <div class="popBox">
+                        <p class="card-text">{{ doc.course.ctitle}}</p>
+                    </div>
+                    {% endif %}
+                    <a href="{{ url_for('download_document', document_id=doc.id) }}" class="btn btn-primary pulse"
+                        target="_blank">View Document</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <!-- Video Section -->
+    <h1 class="text-center" id="video">Videos</h1>
+    <div class="row" style="padding:0px 75px;">
+        {% for video in all_video %}
+        <div class="col-md-4 mb-4">
+            <div class="video-thumbnail" data-video-id="{{ video.video_id }}">
+                <img src="{{ url_for('static', filename=video.thumbnail_path) }}" alt="{{ video.video_title }}" width="400px">
+                <button class="play-button">Play Video</button>
+            </div>
+            <div class="video-container" id="video-container-{{ video.video_id }}"></div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Course Section -->
+    <h1 class="text-center" id="courses">Courses</h1>
+    <div class="row">
+        {% for doc in documents %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 library-item">
+                <img src="{{ url_for('static', filename=doc.image_path) }}" class="card-img-top" alt="{{ doc.title }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ doc.title }}</h5>
+                    <div class="popBox">
+                        <p class="card-text">{{ doc.description }}</p>
+                    </div>
+                    <a href="{{ url_for('download_document', document_id=doc.id) }}" class="btn btn-primary"
+                        target="_blank">View Document</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+     function embedVideo(videoId, containerElement) {
+            // Create the iframe element
+            const iframe = document.createElement('iframe');
+            iframe.width = '100%';
+            iframe.height = '615';
+            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            iframe.frameBorder = '0';
+            iframe.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';
+            iframe.allowFullscreen = true;
+
+            // Append the iframe to the container element
+            containerElement.innerHTML = '';
+            containerElement.appendChild(iframe);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const videoThumbnails = document.querySelectorAll('.video-thumbnail');
+
+            videoThumbnails.forEach(thumbnail => {
+                const playButton = thumbnail.querySelector('.play-button');
+                playButton.addEventListener('click', function () {
+                    const videoId = thumbnail.dataset.videoId;
+                    const videoContainer = document.getElementById(`video-container-${videoId}`);
+                    embedVideo(videoId, videoContainer);
+                });
+            });
+        });
+</script>
 {% endblock main %}
+<!-- script> 
+//     document.addEventListener('DOMContentLoaded', function () {
+//   const videoThumbnails = document.querySelectorAll('.video-thumbnail');
+
+//   videoThumbnails.forEach(thumbnail => {
+//       const playButton = thumbnail.querySelector('.play-button');
+//       playButton.addEventListener('click', function () {
+//           const videoId = thumbnail.getAttribute('data-video-id');
+//           const videoContainer = document.getElementById('video-container-' + videoId);
+
+//           const iframe = document.createElement('iframe');
+//           iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+//           iframe.width = '560';
+//           iframe.height = '315';
+//           iframe.frameBorder = '0';
+//           iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+//           iframe.allowFullscreen = true;
+
+//           videoContainer.innerHTML = '';
+//           videoContainer.appendChild(iframe);
+//       });
+//   });
+// });
+///script> -->

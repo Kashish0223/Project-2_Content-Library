@@ -31,3 +31,8 @@ class Document(database.Model):
     course_id = database.Column(database.Integer, database.ForeignKey('course.id'), nullable=False)
     course = database.relationship('Course', backref='contents')
 
+class Video(database.Model):
+    id = database.Column(database.Integer, primary_key=True)
+    video_title = database.Column(database.String(100), nullable=False)
+    thumbnail_path = database.Column(database.String(200), nullable=False)
+    video_id = database.Column(database.String(100), nullable=False)
