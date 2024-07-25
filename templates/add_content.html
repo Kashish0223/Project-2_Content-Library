@@ -13,25 +13,35 @@
         <form class="contact-form" action="/add_content" method="post" enctype="multipart/form-data">
             <label for="img">Image</label>
             <input type="file" id="img" name="img">
-            <label for="cltitle">Content Title</label>
-            <input type="text" id="cltitle" name="cltitle">
-            <label for="cldesc">Content Description</label>
-            <input type="text" id="cldesc" name="cldesc">
-            <label for="docu">Upload Document</label>
-            <input type="file" id="docu" name="docu">
+            <label for="title">Content Title</label>
+            <select name="title" id="title">
+                <option value="">Select a title</option>
+                {% for mod in allmodule %}
+                <option value="{{ mod.title }}">{{ mod.title }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="description">Content Description</label>
+            <input type="text" id="description" name="description">
+
             <label for="course">Course Name</label>
             <select name="course" id="course">
                 <option value="">Select a course</option>
-                {% for course in courses %}
-                <option value="{{ course.id }}" {% if course.id == course.course_id %}selected{% endif %}>{{ course.ctitle }}</option>
+                {% for course in allcourse %}
+                <option value="{{ course.id }}" {% if course.id==course.id %}selected{% endif %}>{{ course.ctitle }}
+                </option>
                 {% endfor %}
             </select>
+            <label for="docu">Upload Document</label>
+            <input type="file" id="docu" name="docu">
+            <label for="docdate">Content Date:</label>
+            <input type="date" id="docdate" name="docdate" required>
             <button type="submit" name="submit">Submit</button>
         </form>
     </div>
 
     <div class="container">
-        <table class="table text-center border border-dark">
+        <table class="table text-center border border-dark" style="width: 100%;">
             <thead>
                 <tr>
                     <th scope="col" class="bg-dark text-light">Id</th>
@@ -40,27 +50,28 @@
                     <th scope="col" class="bg-dark text-light">Image Path</th>
                     <th scope="col" class="bg-dark text-light">Document Path</th>
                     <th scope="col" class="bg-dark text-light">Course Id</th>
+                    <th scope="col" class="bg-dark text-light">Content Date</th>
                     <th scope="col" class="bg-dark text-light">Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for doc in documents %}
                 <tr>
-                  <td scope="row">{{ doc.id }}</td>
-                  <td>{{ doc.title }}</td>
-                  <td>{{ doc.description }}</td>
-                  <td>{{ doc.image_path }}</td>
-                  <td>{{ doc.document_path }}</td>
-                  <td>{{ doc.course.ctitle }}</td>
-                  <td>
-                    <a href="/contentupdate?id={{ doc.id }}" class="btn btn-primary">Update</a>
-                    <a href="/contentdelete?id={{ doc.id }}" class="btn btn-secondary">Delete</a>
-                  </td>
+                    <td scope="row">{{ doc.id }}</td>
+                    <td>{{ doc.title }}</td>
+                    <td>{{ doc.description }}</td>
+                    <td>{{ doc.image_path }}</td>
+                    <td>{{ doc.document_path }}</td>
+                    <td>{{ doc.course.course_id }}</td>
+                    <td>{{ doc.docdate }}</td>
+                    <td>
+                        <a href="/contentupdate?id={{ doc.id }}" class="btn btn-primary">Update</a>
+                        <a href="/contentdelete?id={{ doc.id }}" class="btn btn-secondary">Delete</a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
-
 {% endblock main%}

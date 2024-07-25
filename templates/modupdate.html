@@ -21,6 +21,8 @@
         <option value="{{ course.id }}" {% if course.id == reqmod.course_id %}selected{% endif %}>{{ course.ctitle }}</option>
         {% endfor %}
       </select>
+      <label for="mod_date">Module Date:</label>
+      <input type="date" id="mod_date" name="mod_date"  value="{{ reqmod.mod_date }}">
       <button type="submit" name="submit">Submit</button>
     </form>
   </div>

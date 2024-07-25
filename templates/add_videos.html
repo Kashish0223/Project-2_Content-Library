@@ -1,6 +1,6 @@
 {% extends "parent.html" %}
 {% block title %}
-<title>Add_Video</title>
+<title>Add Video</title>
 {% endblock title %}
 
 {% block main %}
@@ -9,13 +9,15 @@
         <div class="contact-header">
             <h4>Add Video</h4>
         </div>
-        <form class="contact-form" action="{{ url_for('add_videos') }}" method="POST" enctype="multipart/form-data" onsubmit="handleFormSubmit(event)">
+        <form class="contact-form" action="{{ url_for('add_videos') }}" method="POST" enctype="multipart/form-data">
             <label for="video_title">Video Title:</label>
             <input type="text" id="video_title" name="video_title" required><br>
             <!-- <label for="thumbnail_path">Thumbnail Path:</label>
-            <input type="file" id="thumbnail_path" name="thumbnail_path" required><br> -->
+            <input type="file" id="thumbnail_path" name="thumbnail_path"><br> -->
             <label for="video_id">Video ID:</label>
-            <input type="text" id="video_id" name="video_id" required>
+            <input type="text" id="video_id" name="video_id" required><br>
+            <label for="video_date">Video Date:</label>
+            <input type="date" id="video_date" name="video_date" required><br>
             <button type="submit">Add Video</button>
         </form>
         <div class="container">
@@ -24,8 +26,10 @@
                     <tr>
                         <th scope="col" class="bg-dark text-light">Id</th>
                         <th scope="col" class="bg-dark text-light">Video Title</th>
+                        <!-- Uncomment if using thumbnail path -->
                         <!-- <th scope="col" class="bg-dark text-light">Thumbnail Path</th> -->
-                        <th scope="col" class="bg-dark text-light">Video Id</th>
+                        <th scope="col" class="bg-dark text-light">Video ID</th>
+                        <th scope="col" class="bg-dark text-light">Video Date</th>
                         <th scope="col" class="bg-dark text-light">Action</th>
                     </tr>
                 </thead>
@@ -34,11 +38,16 @@
                     <tr>
                         <td scope="row">{{ video.id }}</td>
                         <td>{{ video.video_title }}</td>
+                        <!-- Uncomment if using thumbnail path -->
                         <!-- <td>{{ video.thumbnail_path }}</td> -->
                         <td>{{ video.video_id }}</td>
+                        <td>{{ video.video_date }}</td>
                         <td>
-                            <a href="/videoupdate?id={{ video.id }}" class="btn btn-primary">Update</a>
-                            <a href="/videodelete?id={{ video.id }}" class="btn btn-secondary">Delete</a>
+                            <form action="{{ url_for('videodelete') }}" method="POST" style="display:inline;">
+                                <input type="hidden" name="id" value="{{ video.id }}">
+                                <button type="submit" class="btn btn-secondary">Delete</button>
+                            </form>
+                            <a href="{{ url_for('videoupdate', video_id=video.id) }}" class="btn btn-primary">Update</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -47,4 +56,4 @@
         </div>
     </div>
 </div>
-{% endblock main %}
+{% endblock main %} 

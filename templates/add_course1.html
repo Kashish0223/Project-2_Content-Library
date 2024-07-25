@@ -1,0 +1,51 @@
+{% extends "parent.html" %}
+{% block title %}
+<title>Add_Module</title>
+{% endblock title %}
+
+{% block main %}
+<div class="col-8">
+  <div class="contact-container">
+    <div class="contact-header">
+      <h4>Add Module</h4>
+    </div>
+    <form class="contact-form" action="/add_course" method="post">
+        <label for="ctitle">Course Title</label>
+        <input type="text" id="ctitle" name="ctitle">
+        <label for="cdescription">Course Description</label>
+        <input type="text" id="cdescription" name="cdescription">
+        <label for="cdate">Course Date</label>
+        <input type="date" id="cdate" name="cdate">
+        <button type="submit" name="submit">Submit</button>
+      </form>
+  </div>
+  <div class="container">
+    <table class="table text-center border border-dark">
+      <thead>
+        <tr>
+          <th scope="col" class="bg-dark text-light">Id</th>
+          <th scope="col" class="bg-dark text-light">Course Title</th>
+          <th scope="col" class="bg-dark text-light">Course Description</th>
+          <th scope="col" class="bg-dark text-light">Course Date</th>
+          <th scope="col" class="bg-dark text-light">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for cat in allCourse %}
+        <tr>
+          <td scope="row">{{cat.id}}</td>
+          <td>{{cat.ctitle}}</td>
+          <td>{{cat.cdescription}}</td>
+          <td>{{cat.cdate}}</td>
+          <td>
+            <a href="/coupdate?id={{cat.id}}" class="btn btn-primary">Update</a>
+            <a href="/catdelete?id={{cat.id}}" class="btn btn-secondary">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+{% endblock main %}

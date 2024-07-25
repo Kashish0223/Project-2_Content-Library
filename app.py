@@ -4,6 +4,7 @@ from model import User, Course, Document, Module, Video
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
+from flask_migrate import Migrate
 import os
 
 app = Flask(__name__)
@@ -13,20 +14,20 @@ app.secret_key = 'your_secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///library.db'
 #create object of SQLAlchemy
 database.init_app(app)
+migrate = Migrate(app, database)
 
 # Set the directory where the static files are stored
 UPLOAD_FOLDER = 'static/images'
 UPLOAD_VIDEO = 'static/videos'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['UPLOAD_VIDEO'] = UPLOAD_VIDEO
-# app.config['UPLOAD_VIDEO'] = os.path.join(app.root_path, 'static', 'videos')
 
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png','mp4'}
 
 # Set the directory where the static documents are stored
 UPLOAD_DOCUMENT = 'static/documents'
 app.config['UPLOAD_DOCUMENT'] = UPLOAD_DOCUMENT
-ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx', 'xlsx', 'xls'}
+ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx', 'xlsx', 'xls','ppt'}
 
 # Creating the routes
 @app.route('/index')
@@ -37,11 +38,11 @@ def index():
     return render_template("index.html")
 
 @app.route('/')
-def base():
+def home():
     if 'role' not in session or session['role'] != 'student':
         flash('You do not have access to this page.', 'danger')
         return redirect('/login')
-    return render_template("base.html")
+    return render_template("home.html")
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -101,12 +102,6 @@ def about():
         return redirect('/login')
   return render_template("about.html")
 
-@app.route('/product')
-def product():
-  if 'role' not in session or session['role'] != 'student':
-        flash('You do not have access to this page.', 'danger')
-        return redirect('/login')
-  return render_template("product.html")
 
 ##############---------Module Route start---------################
 @app.route('/add_module', methods=['GET', 'POST'])
@@ -116,13 +111,17 @@ def add_module():
         return redirect('/login')
     
     if request.method == "POST":
-        # Fetch the values 
         modtitle = request.form.get('title')
         moddescription = request.form.get('description')
         mcourse = request.form.get('course')
+        moddate_str = request.form.get('mod_date')
+       
+        try:
+            mod_date = datetime.strptime(moddate_str, '%Y-%m-%d').date()
+        except ValueError:
+            return "Invalid date format. Please use YYYY-MM-DD."
 
-        # Add to database
-        modadd = Module(title=modtitle, description=moddescription, course_id=mcourse)
+        modadd = Module(title=modtitle, description=moddescription, course_id=mcourse, mod_date=mod_date)
         database.session.add(modadd)
         database.session.commit()
 
@@ -167,12 +166,21 @@ def modupdate():
         updatedtitle = request.form.get('title')
         updateddescription = request.form.get('description')
         updatedcourse_id = request.form.get('course')
+        updateddate = request.form.get('mod_date')
+
+        # Validate and convert the date
+        try:
+            updateddate = datetime.strptime(updateddate, '%Y-%m-%d')
+        except ValueError:
+            flash('Invalid date format. Please use YYYY-MM-DD.', 'danger')
+            return redirect(request.url)
         
         # changing the value of existing module
         reqmod.title = updatedtitle
         reqmod.description = updateddescription
         reqmod.course_id = updatedcourse_id  # Assuming course_id is the foreign key field
-        
+        reqmod.mod_date = updateddate
+
         # committing changes to database
         database.session.add(reqmod)
         database.session.commit()
@@ -192,19 +200,16 @@ def add_course():
         return redirect('/login')
      if request.method == "POST":
         
-        # fetch the values 
         cattitle = request.form.get('ctitle')
         catdescription = request.form.get('cdescription')
         catdate_str = request.form.get('cdate')
        
-           # Convert the string to a date object
         try:
             catdate = datetime.strptime(catdate_str, '%Y-%m-%d').date()
         except ValueError:
-            # If the date format is not recognized, return an error
             return "Invalid date format. Please use YYYY-MM-DD."
 
-        # add to database
+
         catadd = Course(ctitle=cattitle,cdescription=catdescription,cdate=catdate)
         database.session.add(catadd)
         database.session.commit()
@@ -252,7 +257,6 @@ def coupdate():
       try:
             updateddate = datetime.strptime(updateddate_str, '%Y-%m-%d').date()
       except ValueError:
-            # If the date format is not recognized, return an error
             return "Invalid date format. Please use YYYY-MM-DD."
       
       # changing the value of existing course
@@ -270,65 +274,157 @@ def coupdate():
 ##############---------Course Route End---------################
 
 ##############---------Product Route start---------################
-@app.route('/add_product')
-def addproduct():
-  if 'role' not in session or session['role'] != 'teacher':
-        flash('You do not have access to this page.', 'danger')
-        return redirect('/login')
-  return render_template("add_product.html")
-##############---------Product Route End---------################
-
-##############---------Content Library Route Start---------################
-@app.route('/ContentLibrary')
-def library():
+@app.route('/product')
+def product():
     if 'role' not in session or session['role'] != 'student':
         flash('You do not have access to this page.', 'danger')
         return redirect('/login')
     documents = Document.query.all()
+    if not documents:
+        flash('No documents found', 'warning')
+    else:
+        for doc in documents:
+            print(f"Document ID: {doc.id}, Title: {doc.title}, Image Path: {doc.image_path}")
+    return render_template('product.html', documents=documents)
+
+    
+##############---------Product Route End---------################
+
+##############---------Content Library Route Start---------################
+@app.route('/ContentLibrary')
+def content_library():
+    if 'role' not in session or session['role'] != 'student':
+        flash('You do not have access to this page.', 'danger')
+        return redirect('/login')
+    allmodule = Module.query.all()
     all_video = Video.query.all()
-    return render_template('ContentLibrary.html',all_video=all_video, documents=documents)
+    documents = Document.query.all()
+    allcourse = Course.query.with_entities(Course.id, Course.ctitle).all()
+    print(all_video)
+    return render_template('ContentLibrary.html',allmodule=allmodule,all_video=all_video,
+                           documents=documents, 
+                           allcourse=allcourse)
+# @app.route('/ContentLibrary')
+# def ContentLibrary():
+#     if 'role' not in session or session['role'] != 'student':
+#         flash('You do not have access to this page.', 'danger')
+#         return redirect('/login')
+    
+#     # Fetch documents from the database
+#     documents = Document.query.all()
+#     all_video = Video.query.all()
+#     allmodule = Module.query.all()
+#     allcourse = Course.query.with_entities(Course.id, Course.ctitle).all()
+
+
+#     return render_template('ContentLibrary.html', all_video=all_video, documents=documents, allcourse=allcourse, allmodule=allmodule)
+
+# @app.route('/add_content', methods=['GET', 'POST'])
+# def add_content():
+#     if 'role' not in session or session['role'] != 'teacher':
+#         flash('You do not have access to this page.', 'danger')
+#         return redirect('/login')
+#     if request.method == 'POST':
+#         # Handle form submission
+#         title = request.form['title']
+#         description = request.form['description']
+#         course_id = request.form['course']
+#         image = request.files['img']
+#         document = request.files['docu']
+#         ddate_str = request.form.get('docdate')
+       
+# #         try:
+#             docdate = datetime.strptime(ddate_str, '%Y-%m-%d').date()
+#         except ValueError:
+# #             return "Invalid date format. Please use YYYY-MM-DD."
+
+#         # Save the image file
+#         image_filename = secure_filename(image.filename)
+#         image_path = os.path.join('static', 'images', image_filename).replace('\\', '/')
+#         image.save(os.path.join(app.config['UPLOAD_FOLDER'], image_filename))
+    
+#         # Save the document file
+#         document_filename = secure_filename(document.filename)
+#         document_path = os.path.join('static', 'documents', document_filename).replace('\\', '/')
+#         image.save(os.path.join(app.config['UPLOAD_DOCUMENT'], document_filename))
+
+#         # Create a new content item
+#         new_content = Document(title=title, description=description, image_path='images/' + image_filename, document_path='documents/' + document_filename, course_id=course_id)
+#         database.session.add(new_content)
+#         database.session.commit()
+
+#         return redirect('/add_content')
+#     else:
+#         # Fetch the courses and render the template
+#         allmodule = Module.query.with_entities(Module.id, Module.title)
+#         documents = Document.query.all()
+#         all_video = Video.query.all()
+#         allcourse = Course.query.all()
+#         allcourse = Course.query.with_entities(Course.id, Course.ctitle)
+#         documents = Document.query.all()
+#         all_video = Video.query.all()
+#         return render_template('add_content.html', allcourse=allcourse, documents=documents,all_video=all_video)
 
 @app.route('/add_content', methods=['GET', 'POST'])
 def add_content():
     if 'role' not in session or session['role'] != 'teacher':
         flash('You do not have access to this page.', 'danger')
         return redirect('/login')
+    
     if request.method == 'POST':
         # Handle form submission
-        title = request.form['cltitle']
-        description = request.form['cldesc']
-        course_id = request.form['course']
-        image = request.files['img']
-        document = request.files['docu']
+        title = request.form.get('title')
+        description = request.form.get('description')
+        course_id = request.form.get('course')
+        image = request.files.get('img')
+        document = request.files.get('docu')
+        ddate_str = request.form.get('docdate')
+       
+        # Convert the string to a date object
+        try:
+            docdate = datetime.strptime(ddate_str, '%Y-%m-%d').date()
+        except ValueError:
+            return "Invalid date format. Please use YYYY-MM-DD."
 
         # Save the image file
-        image_filename = secure_filename(image.filename)
-        image_path = os.path.join('static', 'images', image_filename).replace('\\', '/')
-        image.save(os.path.join(app.config['UPLOAD_FOLDER'], image_filename))
-    
+        if image:
+            image_filename = secure_filename(image.filename)
+            image_path = os.path.join(app.config['UPLOAD_FOLDER'], image_filename).replace('\\', '/')
+            image.save(image_path)
+        else:
+            image_path = None
+        
         # Save the document file
-        document_filename = secure_filename(document.filename)
-        document_path = os.path.join('static', 'documents', document_filename).replace('\\', '/')
-        image.save(os.path.join(app.config['UPLOAD_DOCUMENT'], document_filename))
+        if document:
+            document_filename = secure_filename(document.filename)
+            document_path = os.path.join(app.config['UPLOAD_DOCUMENT'], document_filename).replace('\\', '/')
+            document.save(document_path)
+        else:
+            document_path = None
 
         # Create a new content item
-        new_content = Document(title=title, description=description, image_path='images/' + image_filename, document_path='documents/' + document_filename, course_id=course_id)
+        new_content = Document(
+            title=title,
+            description=description,
+            image_path=image_path,
+            document_path=document_path,
+            course_id=course_id,
+            docdate=docdate
+        )
         database.session.add(new_content)
         database.session.commit()
 
+        flash('Content added successfully!', 'success')
         return redirect('/add_content')
     else:
         # Fetch the courses and render the template
-        courses = Course.query.with_entities(Course.id, Course.ctitle)
+        allmodule = Module.query.with_entities(Module.id, Module.title).all()
         documents = Document.query.all()
         all_video = Video.query.all()
-        return render_template('add_content.html', courses=courses, documents=documents,all_video=all_video)
-
+        allcourse = Course.query.all()
+        return render_template('add_content.html', allmodule=allmodule, allcourse=allcourse, documents=documents, all_video=all_video)
 @app.route('/contentdelete')
 def contentdelete():
-#    if 'role' not in session or session['role'] != 'teacher':
-#         flash('You do not have access to this page.', 'danger')
-#         return redirect('/login')
    # extract the id
    serial_number = request.args.get('id')
 
@@ -345,10 +441,18 @@ def contentupdate():
     content_id = request.args.get('id')
     reqcontent = Document.query.get(content_id)
     if request.method == 'POST':
-        reqcontent.title = request.form['ctitle']
-        reqcontent.description = request.form['cldesc']
+        reqcontent.title = request.form['title']
+        reqcontent.description = request.form['description']
         reqcontent.course_id = request.form['course']
+        # reqcontent.docdate = request.form['docdate']
         
+        ddate_str = request.form['docdate']
+        try:
+            reqcontent.docdate = datetime.strptime(ddate_str, '%Y-%m-%d').date()
+        except ValueError:
+            flash('Invalid date format. Please use YYYY-MM-DD.', 'danger')
+            return redirect('/contentupdate?id=' + content_id)
+
         image = request.files['img']
         document = request.files['docu']
         
@@ -383,48 +487,78 @@ if not os.path.exists(app.config['UPLOAD_FOLDER']):
 ##############---------Content Library Route End---------################
 
 ##############---------Video Route Start---------################
-@app.route('/add_videos', methods=['POST', 'GET'])
+@app.route('/add_videos', methods=['GET', 'POST'])
 def add_videos():
+    if 'role' not in session or session['role'] != 'teacher':
+        flash('You do not have access to this page.', 'danger')
+        return redirect('/login')
+
     if request.method == 'POST':
-        video_title = request.form['video_title']
-        video_id = request.form['video_id']
-        
-        # Handle file upload
-        thumbnail = request.files['thumbnail_path']
+        video_title = request.form.get('video_title')
+        video_id = request.form.get('video_id')
+        vdate_str = request.form.get('video_date')
 
-        if thumbnail:
-            thumbnail_filename = secure_filename(thumbnail.filename)
-            thumbnail_path = os.path.join('videos', thumbnail_filename).replace('\\', '/')
-           
-            thumbnail.save(os.path.join(app.config['UPLOAD_VIDEO'], thumbnail_filename))
-            new_video = Video(video_title=video_title, thumbnail_path=thumbnail_path, video_id=video_id)
-            database.session.add(new_video)
-            database.session.commit()
-            return redirect(url_for('add_videos'))
-        else:
-            flash('No file part', 'danger')
-            return redirect(url_for('add_videos'))
+        # Convert the string to a date object
+        try:
+            video_date = datetime.strptime(vdate_str, '%Y-%m-%d').date()
+        except ValueError:
+            return "Invalid date format. Please use YYYY-MM-DD."
 
+        thumbnail_path = f"https://img.youtube.com/vi/{video_id}/0.jpg"
+
+        # Create a new video item
+        new_video = Video(
+            video_title=video_title,
+            video_id=video_id,
+            video_date=video_date,
+            thumbnail_path=thumbnail_path
+        )
+        database.session.add(new_video)
+        database.session.commit()
+
+        flash('Video added successfully!', 'success')
+        return redirect('/add_videos')
     else:
+        # Fetch the videos and render the template
         all_video = Video.query.all()
         return render_template('add_videos.html', all_video=all_video)
+@app.route('/embed_video', methods=['POST', 'GET'])
+def embed_video():
+    if request.method == 'POST':
+        video_id = request.form['video_id']
+        return render_template('ContentLibrary.html', video_id=video_id)
 
-@app.route('/videodelete')
+    return render_template('ContentLibrary.html')
+
+@app.route('/videoupdate/<int:video_id>', methods=["GET", "POST"])
+def videoupdate(video_id):
+    video = Video.query.get_or_404(video_id)
+
+    if request.method == 'POST':
+        video.video_title = request.form['video_title']
+        video.video_id = request.form['video_id']
+        videodate_str = request.form.get('video_date')
+
+        video.video_date = datetime.strptime(videodate_str, '%Y-%m-%d').date()
+        
+        database.session.commit()
+        flash('Video updated successfully', 'success')
+        return redirect(url_for('add_videos'))  
+    
+    return render_template('videoupdate.html', video=video)
+
+
+@app.route('/videodelete', methods=['GET','POST'])
 def videodelete():
-#    if 'role' not in session or session['role'] != 'teacher':
-#         flash('You do not have access to this page.', 'danger')
-#         return redirect('/login')
-   # extract the id
-   serial_number = request.args.get('id')
+    video_id = request.form.get('id')
 
-   # extract the id
-   video_id = Video.query.filter_by(id=serial_number).first()
+    video = Video.query.get_or_404(video_id)
 
-   database.session.delete(video_id)
-   database.session.commit()
+    database.session.delete(video)
+    database.session.commit()
 
-   return redirect("/add_videos")  
+    return redirect(url_for('add_videos'))
 
 if __name__ == '__main__':
   # Run the application
-  app.run()
+  app.run(debug=True)

@@ -4,55 +4,24 @@
 {% endblock title %}
 
 {% block main %}
-<div class="index">
-  <div class="col">
-    <div class="product-header">
-      <h1>Our Products</h1>
-    </div>
-    <div class="product-container">
-      <!-- Product Item -->
-      <div class="product-item">
-        <img src="static\images\img1.jpg" alt="Product 1">
-        <h2>Product 1</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        <div class="price">$49.99</div>
-        <button class="btn">Buy Now</button>
-      </div>
-      <div class="product-item">
-        <img src="static\images\img1.jpg" alt="Product 1">
-        <h2>Product 1</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        <div class="price">$49.99</div>
-        <button class="btn">Buy Now</button>
-      </div>
-      <div class="product-item">
-        <img src="static\images\img1.jpg" alt="Product 1">
-        <h2>Product 1</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        <div class="price">$49.99</div>
-        <button class="btn">Buy Now</button>
-      </div>
-      <div class="product-item">
-        <img src="static\images\img1.jpg" alt="Product 1">
-        <h2>Product 1</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        <div class="price">$49.99</div>
-        <button class="btn">Buy Now</button>
-      </div>
-      <div class="product-item">
-        <img src="static\images\img1.jpg" alt="Product 1">
-        <h2>Product 1</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        <div class="price">$49.99</div>
-        <button class="btn">Buy Now</button>
-      </div>
-      <div class="product-item">
-        <img src="static\images\img1.jpg" alt="Product 1">
-        <h2>Product 1</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        <div class="price">$49.99</div>
-        <button class="btn">Buy Now</button>
+<div class="index container-fluid mt-3 pl-3">
+  <div class="row">
+    {% for doc in documents %}
+    <div class="col-md-3 mb-4">
+      <div class="card h-100 library-item" data-course-id="{{ doc.course_id }}" data-date="{{ doc.docdate }}">
+        <img src="{{ url_for('static', filename=doc.image_path) }}" class="card-img-top" alt="{{ doc.cltitle }}">
+        <div class="card-body">
+          <h5 class="card-title">{{ doc.cltitle }}</h5>
+          <div class="popBox">
+            <p class="card-text" style="display: none;">{{ doc.description }}</p>
+          </div>
+          <a href="{{ url_for('download_document', document_id=doc.id) }}" class="btn btn-primary pulse"
+            target="_blank">View Document</a>
+        </div>
       </div>
     </div>
+    {% endfor %}
   </div>
-  {% endblock main %}
+</div>
+{% endblock main %}
+

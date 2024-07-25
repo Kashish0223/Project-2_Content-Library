@@ -13,11 +13,11 @@
             <label for="img">Image</label>
             <input type="file" id="img" name="img">
             
-            <label for="ctitle">Content Title</label>
-            <input type="text" id="ctitle" name="ctitle" value="{{ reqcontent.title }}">
+            <label for="title">Content Title</label>
+            <input type="text" id="title" name="title" value="{{ reqcontent.title }}">
             
-            <label for="cldesc">Content Description</label>
-            <input type="text" id="cldesc" name="cldesc" value="{{ reqcontent.description }}">
+            <label for="description">Content Description</label>
+            <input type="text" id="description" name="description" value="{{ reqcontent.description }}">
             
             <label for="docu">Upload Document</label>
             <input type="file" id="docu" name="docu">
@@ -29,6 +29,10 @@
                 <option value="{{ course.id }}" {% if course.id == reqcontent.course_id %}selected{% endif %}>{{ course.ctitle }}</option>
                 {% endfor %}
             </select>
+
+            <label for="docdate">Content Date:</label>
+            <input type="date" id="docdate" name="docdate" value="{{ reqcontent.docdate }}">
+
             <button type="submit" name="submit">Submit</button>
         </form>
     </div>

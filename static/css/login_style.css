@@ -54,7 +54,7 @@ body {
 
 select option{
   background: transparent;
-  color: #fff;
+  color: #000000;
 }
 
 .input-box input::placeholder {

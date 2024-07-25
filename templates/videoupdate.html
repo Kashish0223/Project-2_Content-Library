@@ -1,0 +1,23 @@
+{% extends "parent.html" %}
+{% block title %}
+<title>Update Add Video</title>
+{% endblock title %}
+
+{% block main %}
+<div class="col-8">
+    <div class="contact-container">
+        <div class="contact-header">
+            <h4>Update Add Video</h4>
+        </div>
+        <form class="contact-form" action="{{ url_for('videoupdate', video_id=video.id) }}" method="POST" enctype="multipart/form-data" onsubmit="handleFormSubmit(event)">
+            <label for="video_title">Video Title:</label>
+            <input type="text" id="video_title" name="video_title" value="{{ video.video_title }}" required><br>
+            <label for="video_id">Video ID:</label>
+            <input type="text" id="video_id" name="video_id" value="{{ video.video_id }}" required><br>
+            <label for="video_date">Video Date:</label>
+            <input type="date" id="video_date" name="video_date" value="{{ video.video_date }}" required>
+            <button type="submit">Update Video</button>
+        </form>
+    </div>
+</div>
+{% endblock main %}

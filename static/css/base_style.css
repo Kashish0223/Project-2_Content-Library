@@ -53,9 +53,12 @@ nav ul {
 nav ul li {
   margin: 0 10px;
 }
-
 nav ul li a {
   color: #000;
+  text-decoration: none;
+}
+nav ul li a:hover {
+  color: #030f27;
   text-decoration: none;
 }
 
@@ -520,3 +523,58 @@ th {
   border-radius: 5px;
 }
 /*******---------Video CSS End---------*******/
+/*******---------Home Page Css---------*******/
+
+main {
+  padding: 20px;
+}
+
+.course {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin: 20px 0;
+  padding: 15px;
+  transition: transform 0.2s;
+}
+
+.course:hover {
+  transform: scale(1.02);
+}
+
+.course h2 {
+  color: #3498db;
+  margin-top: 0;
+}
+
+.module {
+  margin-bottom: 10px;
+  padding: 10px;
+  border-left: 4px solid #3498db;
+  background-color: #f9f9f9;
+}
+
+.module h3 {
+  margin-top: 0;
+  color: #3498db;
+}
+
+footer {
+  background-color: #333;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
+
+@media (max-width: 600px) {
+  nav ul {
+      flex-direction: column;
+  }
+
+  nav li {
+      margin: 10px 0;
+  }
+}

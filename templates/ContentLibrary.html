@@ -11,35 +11,85 @@
 
 </div>
 <div class="index container-fluid mt-3 pl-3">
+    <!-- Sort and Filter Section -->
+    <div class="sort-filter-container mb-4">
+        <label for="sort-options">Sort by:</label>
+        <select id="sort-options">
+            <option value="title">Title</option>
+            <option value="date">Date Added</option>
+        </select>
+
+        <label for="filter-options">Filter by Course:</label>
+        <select id="filter-options">
+            <option value="all">All</option>
+            {% if allcourse %}
+                {% for course in allcourse %}
+                    <option value="{{ course.id }}">{{ course.ctitle }}</option>
+                {% endfor %}
+            {% else %}
+                <option value="none">No courses available</option>
+            {% endif %}
+        </select>
+    </div>
+    <!-- Module Section -->
+    <!-- <h1 class="text-center" id="module">Our Modules</h1>
+    <div class="row">
+        {% for mod in allmodule %}
+        <div class="col-md-3 mb-4">
+            <div class="card h-100 library-item">
+                <!-- <img src="{{ url_for('static', filename=mod.image_path) }}" class="card-img-top" alt="{{ mod.title }}"> 
+                <div class="card-body">
+                    <h5 class="card-title">{{ mod.title }}</h5>
+                    {% if mod %}
+                    <div class="popBox">
+                        <p class="card-text">{{ mod.description }}</p>
+                    </div>
+                    {% endif %}
+                    <!-- <a href="{{ url_for('download_document', document_id=mod.id) }}" class="btn btn-primary pulse" target="_blank">View Document</a> 
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div> -->
     <!-- Module Section -->
     <h1 class="text-center" id="module">Our Modules</h1>
     <div class="row">
-        {% for doc in documents %}
+        {% for mod in allmodule %}
         <div class="col-md-3 mb-4">
             <div class="card h-100 library-item">
-                <img src="{{ url_for('static', filename=doc.image_path) }}" class="card-img-top" alt="{{ doc.title }}">
                 <div class="card-body">
-                    <h5 class="card-title">{{ doc.title }}</h5>
-                    {% if doc.course %}
-                    <div class="popBox">
-                        <p class="card-text">{{ doc.course.ctitle}}</p>
+                    <h5 class="card-title">{{ mod.title }}</h5>
+                    <div class="description-container">
+                        <p class="short-desc">{{ mod.description[:100] }}...</p>
+                        <p class="full-desc" style="display: none;">{{ mod.description }}</p>
                     </div>
-                    {% endif %}
-                    <a href="{{ url_for('download_document', document_id=doc.id) }}" class="btn btn-primary pulse"
-                        target="_blank">View Document</a>
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
 
+
+
     <!-- Video Section -->
+    <!-- <h1 class="text-center" id="video">Videos</h1>
+    <div class="row" style="padding:0px 15px;">
+        {% for video in all_video %}
+        <div class="col-md-4 mb-4">
+            <div class="video-thumbnail" data-video-id="{{ video.video_id }}">
+                <img src="{{ video.thumbnail_path }}" alt="{{ video.video_title }}" width="350px" height="300px">
+                <button class="play-button">Play Video</button>
+            </div>
+            <div class="video-container" id="video-container-{{ video.video_id }}"></div>
+        </div>
+        {% endfor %}
+    </div> -->
     <h1 class="text-center" id="video">Videos</h1>
     <div class="row" style="padding:0px 15px;">
         {% for video in all_video %}
         <div class="col-md-4 mb-4">
             <div class="video-thumbnail" data-video-id="{{ video.video_id }}">
-                <img src="{{ video.thumbnail_path }}" alt="{{ video.video_title }}" width="450px" height="350px">
+                <img src="{{ video.thumbnail_path }}" alt="{{ video.video_title }}" width="400px" height="320px">
                 <button class="play-button">Play Video</button>
             </div>
             <div class="video-container" id="video-container-{{ video.video_id }}"></div>
@@ -47,19 +97,57 @@
         {% endfor %}
     </div>
 
-    <!-- Course Section -->
+
+    <!-- <h1 class="text-center" id="videos">Videos</h1>
+    <div class="row">
+        {% for video in videos %}
+        <div class="col-md-3 mb-4">
+            <div class="card h-100 library-item" data-video-id="{{ video.id }}" data-date="{{ video.video_date }}">
+                <img src="https://img.youtube.com/vi/{{ video.video_id }}/0.jpg" class="card-img-top"
+                    alt="{{ video.video_title }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ video.video_title }}</h5>
+                    <a href="https://www.youtube.com/watch?v={{ video.video_id }}" class="btn btn-primary pulse"
+                        target="_blank">Watch Video</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div> -->
+    <!-- <h1 class="text-center" id="videos">Videos</h1>
+    <div class="row">
+        {% for video in videos %}
+        <div class="col-md-3 mb-4">
+            <div class="card h-100 library-item">
+                <div class="video-thumbnail" data-video-id="{{ video.video_id }}">
+                    <img src="https://img.youtube.com/vi/{{ video.video_id }}/0.jpg" class="card-img-top" alt="{{ video.video_title }}">
+                    <button class="play-button">Play Video</button>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ video.video_title }}</h5>
+                    <div class="video-container" id="video-container-{{ video.video_id }}"></div>
+                    <a href="https://www.youtube.com/watch?v={{ video.video_id }}" class="btn btn-primary pulse" target="_blank">Watch Video</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div> -->
+    
+    
+    <!-- Courses -->
     <h1 class="text-center" id="courses">Courses</h1>
     <div class="row">
         {% for doc in documents %}
         <div class="col-md-3 mb-4">
-            <div class="card h-100 library-item">
-                <img src="{{ url_for('static', filename=doc.image_path) }}" class="card-img-top" alt="{{ doc.title }}">
+            <div class="card h-100 library-item" data-course-id="{{ doc.course_id }}" data-date="{{ doc.docdate }}">
+                <img src="{{ url_for('static', filename=doc.image_path) }}" class="card-img-top"
+                    alt="{{ doc.cltitle }}">
                 <div class="card-body">
-                    <h5 class="card-title">{{ doc.title }}</h5>
+                    <h5 class="card-title">{{ doc.cltitle }}</h5>
                     <div class="popBox">
-                        <p class="card-text">{{ doc.description }}</p>
+                        <p class="card-text" style="display: none;">{{ doc.description }}</p>
                     </div>
-                    <a href="{{ url_for('download_document', document_id=doc.id) }}" class="btn btn-primary"
+                    <a href="{{ url_for('download_document', document_id=doc.id) }}" class="btn btn-primary pulse"
                         target="_blank">View Document</a>
                 </div>
             </div>
@@ -67,5 +155,79 @@
         {% endfor %}
     </div>
 </div>
+<script>
+    // Adding the script of the external video play
+    document.addEventListener('DOMContentLoaded', function () {
+        const videoThumbnails = document.querySelectorAll('.video-thumbnail');
 
- {% endblock main %}
+videoThumbnails.forEach(thumbnail => {
+    const playButton = thumbnail.querySelector('.play-button');
+    playButton.addEventListener('click', function () {
+        const videoId = thumbnail.getAttribute('data-video-id');
+        const videoContainer = document.getElementById(`video-container-${videoId}`);
+
+        if (videoContainer.innerHTML === '') {
+            const iframe = document.createElement('iframe');
+            iframe.width = '560';
+            iframe.height = '315';
+            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            iframe.frameBorder = '0';
+            iframe.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';
+            iframe.allowFullscreen = true;
+
+            videoContainer.innerHTML = '';
+            videoContainer.appendChild(iframe);
+        }
+
+        videoContainer.querySelector('iframe').style.display = 'block';
+    });
+});
+        // const videoThumbnails = document.querySelectorAll('.video-thumbnail');
+
+        // videoThumbnails.forEach(thumbnail => {
+        //     const playButton = thumbnail.querySelector('.play-button');
+        //     playButton.addEventListener('click', function () {
+        //         const videoId = thumbnail.getAttribute('data-video-id');
+        //         const videoContainer = document.getElementById(`video-container-${videoId}`);
+
+        //         if (videoContainer.innerHTML === '') {
+        //             const iframe = document.createElement('iframe');
+        //             iframe.width = '560';
+        //             iframe.height = '315';
+        //             iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+        //             iframe.frameBorder = '0';
+        //             iframe.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';
+        //             iframe.allowFullscreen = true;
+
+        //             videoContainer.innerHTML = '';
+        //             videoContainer.appendChild(iframe);
+        //         }
+
+        //         videoContainer.querySelector('iframe').style.display = 'block';
+        //     });
+        // });
+    });
+
+    // <script>
+//     function playVideo(videoId) {
+//         var container = document.getElementById('video-container-' + videoId);
+//         container.innerHTML = '<iframe width="350" height="300" src="https://www.youtube.com/embed/' + videoId + '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+//     }
+// });
+    /**************--------Add User Click Start--------**************/
+    document.addEventListener('DOMContentLoaded', function () {
+        const courseItems = document.querySelectorAll('.library-item');
+
+        courseItems.forEach(item => {
+            item.addEventListener('dblclick', function () {
+                const description = this.querySelector('.card-text');
+                if (description) {
+                    description.style.display = (description.style.display === 'none' || description.style.display === '') ? 'block' : 'none';
+                }
+            });
+        });
+    });
+    /**************--------Add User Click End--------**************/
+
+</script>
+{% endblock main %}

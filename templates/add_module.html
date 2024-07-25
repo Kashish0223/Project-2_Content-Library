@@ -21,6 +21,8 @@
         <option value="{{ course.id }}">{{ course.ctitle }}</option>
         {% endfor %}
       </select>
+      <label for="mod_date">Module Date:</label>
+      <input type="date" id="mod_date" name="mod_date" required>
       <button type="submit" name="submit">Submit</button>
     </form>
   </div>
@@ -32,6 +34,7 @@
           <th scope="col" class="bg-dark text-light">Module Title</th>
           <th scope="col" class="bg-dark text-light">Module Description</th>
           <th scope="col" class="bg-dark text-light">Course</th>
+          <th scope="col" class="bg-dark text-light">Module Date</th>
           <th scope="col" class="bg-dark text-light">Action</th>
         </tr>
       </thead>
@@ -42,6 +45,7 @@
           <td>{{module.title}}</td>
           <td>{{module.description}}</td>
           <td>{{module.course.ctitle}}</td>
+          <td>{{module.mod_date}}</td>  
           <td>
             <a href="/modupdate?id={{module.id}}" class="btn btn-primary">Update</a>
             <a href="/moddelete?id={{module.id}}" class="btn btn-secondary">Delete</a>
@@ -53,3 +57,5 @@
   </div>
 </div>
 {% endblock main %}
+
+
