@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request,redirect, send_from_directory,url_for,session, flash
 from extension import database
 from model import User, Course, Document, Module, Video
+from werkzeug.utils import quote
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
