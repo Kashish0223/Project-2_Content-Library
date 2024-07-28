@@ -16,6 +16,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Add this line
 
 # Create object of SQLAlchemy
 database.init_app(app)
+migrate = Migrate(app, database)
 
 # Set the directory where the static files are stored
 UPLOAD_FOLDER = 'static/images'
