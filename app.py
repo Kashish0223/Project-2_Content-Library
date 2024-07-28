@@ -304,66 +304,6 @@ def content_library():
     return render_template('ContentLibrary.html',allmodule=allmodule,all_video=all_video,
                            documents=documents, 
                            allcourse=allcourse)
-# @app.route('/ContentLibrary')
-# def ContentLibrary():
-#     if 'role' not in session or session['role'] != 'student':
-#         flash('You do not have access to this page.', 'danger')
-#         return redirect('/login')
-    
-#     # Fetch documents from the database
-#     documents = Document.query.all()
-#     all_video = Video.query.all()
-#     allmodule = Module.query.all()
-#     allcourse = Course.query.with_entities(Course.id, Course.ctitle).all()
-
-
-#     return render_template('ContentLibrary.html', all_video=all_video, documents=documents, allcourse=allcourse, allmodule=allmodule)
-
-# @app.route('/add_content', methods=['GET', 'POST'])
-# def add_content():
-#     if 'role' not in session or session['role'] != 'teacher':
-#         flash('You do not have access to this page.', 'danger')
-#         return redirect('/login')
-#     if request.method == 'POST':
-#         # Handle form submission
-#         title = request.form['title']
-#         description = request.form['description']
-#         course_id = request.form['course']
-#         image = request.files['img']
-#         document = request.files['docu']
-#         ddate_str = request.form.get('docdate')
-       
-# #         try:
-#             docdate = datetime.strptime(ddate_str, '%Y-%m-%d').date()
-#         except ValueError:
-# #             return "Invalid date format. Please use YYYY-MM-DD."
-
-#         # Save the image file
-#         image_filename = secure_filename(image.filename)
-#         image_path = os.path.join('static', 'images', image_filename).replace('\\', '/')
-#         image.save(os.path.join(app.config['UPLOAD_FOLDER'], image_filename))
-    
-#         # Save the document file
-#         document_filename = secure_filename(document.filename)
-#         document_path = os.path.join('static', 'documents', document_filename).replace('\\', '/')
-#         image.save(os.path.join(app.config['UPLOAD_DOCUMENT'], document_filename))
-
-#         # Create a new content item
-#         new_content = Document(title=title, description=description, image_path='images/' + image_filename, document_path='documents/' + document_filename, course_id=course_id)
-#         database.session.add(new_content)
-#         database.session.commit()
-
-#         return redirect('/add_content')
-#     else:
-#         # Fetch the courses and render the template
-#         allmodule = Module.query.with_entities(Module.id, Module.title)
-#         documents = Document.query.all()
-#         all_video = Video.query.all()
-#         allcourse = Course.query.all()
-#         allcourse = Course.query.with_entities(Course.id, Course.ctitle)
-#         documents = Document.query.all()
-#         all_video = Video.query.all()
-#         return render_template('add_content.html', allcourse=allcourse, documents=documents,all_video=all_video)
 
 @app.route('/add_content', methods=['GET', 'POST'])
 def add_content():
@@ -559,6 +499,6 @@ def videodelete():
 
     return redirect(url_for('add_videos'))
 
-if __name__ == '__main__':
-  # Run the application
-  app.run(debug=True)
+# if __name__ == '__main__':
+#   # Run the application
+#   app.run(debug=True)
