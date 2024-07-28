@@ -8,30 +8,37 @@ from flask_migrate import Migrate
 import os
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'
+app.secret_key = os.environ.get('SECRET_KEY', 'your_default_secret_key')
 
-# Connect the Flask app (server) with SQLite database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///library.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Add this line
-
-# Create object of SQLAlchemy
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///library.db')
 database.init_app(app)
 migrate = Migrate(app, database)
 
-# Set the directory where the static files are stored
 UPLOAD_FOLDER = 'static/images'
 UPLOAD_VIDEO = 'static/videos'
+UPLOAD_DOCUMENT = 'static/documents'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['UPLOAD_VIDEO'] = UPLOAD_VIDEO
-
-ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'mp4'}
-
-# Set the directory where the static documents are stored
-UPLOAD_DOCUMENT = 'static/documents'
 app.config['UPLOAD_DOCUMENT'] = UPLOAD_DOCUMENT
-ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx', 'xlsx', 'xls', 'ppt'}
+ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'mp4', 'pdf', 'doc', 'docx', 'xlsx', 'xls', 'ppt'}
 
-# Creating the routes
+if not os.path.exists(app.config['UPLOAD_FOLDER']):
+    os.makedirs(app.config['UPLOAD_FOLDER'])
+if not os.path.exists(app.config['UPLOAD_VIDEO']):
+    os.makedirs(app.config['UPLOAD_VIDEO'])
+if not os.path.exists(app.config['UPLOAD_DOCUMENT']):
+    os.makedirs(app.config['UPLOAD_DOCUMENT'])
+
+if not app.debug:
+    import logging
+    from logging.handlers import RotatingFileHandler
+    handler = RotatingFileHandler('error.log', maxBytes=10000, backupCount=1)
+    handler.setLevel(logging.ERROR)
+    app.logger.addHandler(handler)
+
+with app.app_context():
+    database.create_all()
+
 @app.route('/index')
 def index():
     if 'role' not in session or session['role'] != 'teacher':
@@ -104,7 +111,6 @@ def about():
         return redirect('/login')
     return render_template("about.html")
 
-##############---------Module Route start---------################
 @app.route('/add_module', methods=['GET', 'POST'])
 def add_module():
     if 'role' not in session or session['role'] != 'teacher':
@@ -120,20 +126,18 @@ def add_module():
         try:
             mod_date = datetime.strptime(moddate_str, '%Y-%m-%d').date()
         except ValueError:
-            return "Invalid date format. Please use YYYY-MM-DD."
+            flash('Invalid date format. Please use YYYY-MM-DD.', 'danger')
+            return redirect(request.url)
 
         modadd = Module(title=modtitle, description=moddescription, course_id=mcourse, mod_date=mod_date)
         database.session.add(modadd)
         database.session.commit()
 
-        # Returning the response
+        flash('Module added successfully!', 'success')
         return redirect("/add_module")
     else:
-        # Fetch all the modules from the database
         allModule = Module.query.all()
         courses = Course.query.with_entities(Course.id, Course.ctitle).all()
-
-        # Returning the response
         return render_template("add_module.html", allModule=allModule, courses=courses)
 
 @app.route('/moddelete')
@@ -141,140 +145,187 @@ def moddelete():
     if 'role' not in session or session['role'] != 'teacher':
         flash('You do not have access to this page.', 'danger')
         return redirect('/login')
-    # extract the id
     serial_number = request.args.get('id')
-
-    # extract the id
     mod_id = Module.query.filter_by(id=serial_number).first()
-
     database.session.delete(mod_id)
     database.session.commit()
-
     return redirect("/add_module")
 
 @app.route('/modupdate', methods=["GET", "POST"])
-def modupdate(): 
+def modupdate():
     if 'role' not in session or session['role'] != 'teacher':
         flash('You do not have access to this page.', 'danger')
         return redirect('/login')
     
-    # getting serial number from the module
     serial_number = request.args.get('id')
     reqmod = Module.query.filter_by(id=serial_number).first()
     
     if request.method == 'POST':
-        # Update the title 
         updatedtitle = request.form.get('title')
         updateddescription = request.form.get('description')
         updatedcourse_id = request.form.get('course')
         updateddate = request.form.get('mod_date')
 
-        # Validate and convert the date
         try:
-            updateddate = datetime.strptime(updateddate, '%Y-%m-%d')
+            updateddate = datetime.strptime(updateddate, '%Y-%m-%d').date()
         except ValueError:
             flash('Invalid date format. Please use YYYY-MM-DD.', 'danger')
             return redirect(request.url)
         
-        # changing the value of existing module
         reqmod.title = updatedtitle
         reqmod.description = updateddescription
-        reqmod.course_id = updatedcourse_id  # Assuming course_id is the foreign key field
+        reqmod.course_id = updatedcourse_id
         reqmod.mod_date = updateddate
 
-        # committing changes to database
         database.session.add(reqmod)
         database.session.commit()
         
+        flash('Module updated successfully!', 'success')
         return redirect("/add_module")
     else:
         courses = Course.query.all()
         return render_template("modupdate.html", courses=courses, reqmod=reqmod)
 
-##############---------Module Route End---------################
-
-##############---------Course Route start---------################
-@app.route('/add_course',methods=['GET','POST'])
+@app.route('/add_course', methods=['GET', 'POST'])
 def add_course():
     if 'role' not in session or session['role'] != 'teacher':
         flash('You do not have access to this page.', 'danger')
         return redirect('/login')
+    
     if request.method == "POST":
+        ctitle = request.form.get('title')
+        cdescription = request.form.get('description')
+        cdate_str = request.form.get('c_date')
         
-        cattitle = request.form.get('ctitle')
-        catdescription = request.form.get('cdescription')
-        catdate_str = request.form.get('cdate')
-       
         try:
-            catdate = datetime.strptime(catdate_str, '%Y-%m-%d').date()
+            c_date = datetime.strptime(cdate_str, '%Y-%m-%d').date()
         except ValueError:
-            return "Invalid date format. Please use YYYY-MM-DD."
+            flash('Invalid date format. Please use YYYY-MM-DD.', 'danger')
+            return redirect(request.url)
 
-        catadd = Course(ctitle=cattitle, cdescription=catdescription, cdate=catdate)
-        database.session.add(catadd)
+        course = Course(ctitle=ctitle, cdescription=cdescription, c_date=c_date)
+        database.session.add(course)
         database.session.commit()
-        # returning the response
+
+        flash('Course added successfully!', 'success')
         return redirect("/add_course")
     else:
-        # fetch all the tasks from the database
         allCourse = Course.query.all()
-
-        # returning the response
         return render_template("add_course.html", allCourse=allCourse)
 
-@app.route('/catdelete')
-def delete():
+@app.route('/coursedelete')
+def coursedelete():
     if 'role' not in session or session['role'] != 'teacher':
         flash('You do not have access to this page.', 'danger')
         return redirect('/login')
-    # extract the id
     serial_number = request.args.get('id')
-
-    # extract the id
-    cat_id = Course.query.filter_by(id=serial_number).first()
-
-    database.session.delete(cat_id)
+    cour_id = Course.query.filter_by(id=serial_number).first()
+    database.session.delete(cour_id)
     database.session.commit()
-
     return redirect("/add_course")
 
-@app.route('/coupdate', methods=["GET", "POST"])
-def coupdate(): 
+@app.route('/courseupdate', methods=["GET", "POST"])
+def courseupdate():
     if 'role' not in session or session['role'] != 'teacher':
         flash('You do not have access to this page.', 'danger')
         return redirect('/login')
     
-    # getting serial number from the database
     serial_number = request.args.get('id')
-    reqcat = Course.query.filter_by(id=serial_number).first()
+    reqcourse = Course.query.filter_by(id=serial_number).first()
     
     if request.method == 'POST':
-        # Update the title 
-        updatedtitle = request.form.get('ctitle')
-        updateddescription = request.form.get('cdescription')
-        updateddate = request.form.get('cdate')
+        updatedtitle = request.form.get('title')
+        updateddescription = request.form.get('description')
+        updateddate = request.form.get('c_date')
 
-        # Validate and convert the date
         try:
-            updateddate = datetime.strptime(updateddate, '%Y-%m-%d')
+            updateddate = datetime.strptime(updateddate, '%Y-%m-%d').date()
         except ValueError:
             flash('Invalid date format. Please use YYYY-MM-DD.', 'danger')
             return redirect(request.url)
         
-        # changing the value of existing task
-        reqcat.ctitle = updatedtitle
-        reqcat.cdescription = updateddescription
-        reqcat.cdate = updateddate
+        reqcourse.ctitle = updatedtitle
+        reqcourse.cdescription = updateddescription
+        reqcourse.c_date = updateddate
 
-        # committing changes to database
-        database.session.add(reqcat)
+        database.session.add(reqcourse)
         database.session.commit()
         
+        flash('Course updated successfully!', 'success')
         return redirect("/add_course")
     else:
-        return render_template("coupdate.html", reqcat=reqcat)
+        return render_template("courseupdate.html", reqcourse=reqcourse)
 
-##############---------Course Route End---------################
+def allowed_file(filename, allowed_extensions):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions
+
+@app.route('/upload_image', methods=['GET', 'POST'])
+def upload_image():
+    if 'role' not in session or session['role'] != 'teacher':
+        flash('You do not have access to this page.', 'danger')
+        return redirect('/login')
+
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and allowed_file(file.filename, {'jpg', 'jpeg', 'png'}):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('uploaded_image', filename=filename))
+        else:
+            flash('Invalid file type.', 'danger')
+            return redirect(request.url)
+    return render_template('upload_image.html')
+
+@app.route('/uploaded_image/<filename>')
+def uploaded_image(filename):
+    return render_template('uploaded_image.html', filename=filename)
+
+@app.route('/upload_video', methods=['GET', 'POST'])
+def upload_video():
+    if 'role' not in session or session['role'] != 'teacher':
+        flash('You do not have access to this page.', 'danger')
+        return redirect('/login')
+    
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and allowed_file(file.filename, {'mp4'}):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_VIDEO'], filename))
+            return redirect(url_for('uploaded_video', filename=filename))
+        else:
+            flash('Invalid file type.', 'danger')
+            return redirect(request.url)
+    return render_template('upload_video.html')
+
+@app.route('/uploaded_video/<filename>')
+def uploaded_video(filename):
+    return render_template('uploaded_video.html', filename=filename)
+
+@app.route('/upload_document', methods=['GET', 'POST'])
+def upload_document():
+    if 'role' not in session or session['role'] != 'teacher':
+        flash('You do not have access to this page.', 'danger')
+        return redirect('/login')
+    
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and allowed_file(file.filename, {'pdf', 'doc', 'docx', 'xlsx', 'xls', 'ppt'}):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_DOCUMENT'], filename))
+            return redirect(url_for('uploaded_document', filename=filename))
+        else:
+            flash('Invalid file type.', 'danger')
+            return redirect(request.url)
+    return render_template('upload_document.html')
+
+@app.route('/uploaded_document/<filename>')
+def uploaded_document(filename):
+    return render_template('uploaded_document.html', filename=filename)
+
+@app.route('/download_document/<int:document_id>')
+def download_document(document_id):
+    doc = Document.query.get_or_404(document_id)
+    return send_from_directory(app.config['UPLOAD_DOCUMENT'], os.path.basename(doc.document_path))
 
 if __name__ == "__main__":
     app.run(debug=True)
