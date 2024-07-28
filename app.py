@@ -328,5 +328,215 @@ def download_document(document_id):
     doc = Document.query.get_or_404(document_id)
     return send_from_directory(app.config['UPLOAD_DOCUMENT'], os.path.basename(doc.document_path))
 
+##############---------Content Library Route Start---------################
+@app.route('/ContentLibrary')
+def content_library():
+    if 'role' not in session or session['role'] != 'student':
+        flash('You do not have access to this page.', 'danger')
+        return redirect('/login')
+    allmodule = Module.query.all()
+    all_video = Video.query.all()
+    documents = Document.query.all()
+    allcourse = Course.query.with_entities(Course.id, Course.ctitle).all()
+    print(all_video)
+    return render_template('ContentLibrary.html',allmodule=allmodule,all_video=all_video,
+                           documents=documents, 
+                           allcourse=allcourse)
+
+@app.route('/add_content', methods=['GET', 'POST'])
+def add_content():
+    if 'role' not in session or session['role'] != 'teacher':
+        flash('You do not have access to this page.', 'danger')
+        return redirect('/login')
+    
+    if request.method == 'POST':
+        # Handle form submission
+        title = request.form.get('title')
+        description = request.form.get('description')
+        course_id = request.form.get('course')
+        image = request.files.get('img')
+        document = request.files.get('docu')
+        ddate_str = request.form.get('docdate')
+       
+        # Convert the string to a date object
+        try:
+            docdate = datetime.strptime(ddate_str, '%Y-%m-%d').date()
+        except ValueError:
+            return "Invalid date format. Please use YYYY-MM-DD."
+
+        # Save the image file
+        if image:
+            image_filename = secure_filename(image.filename)
+            image_path = os.path.join(app.config['UPLOAD_FOLDER'], image_filename).replace('\\', '/')
+            image.save(image_path)
+        else:
+            image_path = None
+        
+        # Save the document file
+        if document:
+            document_filename = secure_filename(document.filename)
+            document_path = os.path.join(app.config['UPLOAD_DOCUMENT'], document_filename).replace('\\', '/')
+            document.save(document_path)
+        else:
+            document_path = None
+
+        # Create a new content item
+        new_content = Document(
+            title=title,
+            description=description,
+            image_path=image_path,
+            document_path=document_path,
+            course_id=course_id,
+            docdate=docdate
+        )
+        database.session.add(new_content)
+        database.session.commit()
+
+        flash('Content added successfully!', 'success')
+        return redirect('/add_content')
+    else:
+        # Fetch the courses and render the template
+        allmodule = Module.query.with_entities(Module.id, Module.title).all()
+        documents = Document.query.all()
+        all_video = Video.query.all()
+        allcourse = Course.query.all()
+        return render_template('add_content.html', allmodule=allmodule, allcourse=allcourse, documents=documents, all_video=all_video)
+@app.route('/contentdelete')
+def contentdelete():
+   # extract the id
+   serial_number = request.args.get('id')
+
+   # extract the id
+   con_id = Document.query.filter_by(id=serial_number).first()
+
+   database.session.delete(con_id)
+   database.session.commit()
+
+   return redirect("/add_content")
+
+@app.route('/contentupdate', methods=['GET', 'POST'])
+def contentupdate():
+    content_id = request.args.get('id')
+    reqcontent = Document.query.get(content_id)
+    if request.method == 'POST':
+        reqcontent.title = request.form['title']
+        reqcontent.description = request.form['description']
+        reqcontent.course_id = request.form['course']
+        # reqcontent.docdate = request.form['docdate']
+        
+        ddate_str = request.form['docdate']
+        try:
+            reqcontent.docdate = datetime.strptime(ddate_str, '%Y-%m-%d').date()
+        except ValueError:
+            flash('Invalid date format. Please use YYYY-MM-DD.', 'danger')
+            return redirect('/contentupdate?id=' + content_id)
+
+        image = request.files['img']
+        document = request.files['docu']
+        
+        if image:
+            image_filename = secure_filename(image.filename)
+            image_path = os.path.join(app.config['UPLOAD_FOLDER'], image_filename).replace('\\', '/')
+            image.save(os.path.join(app.config['UPLOAD_FOLDER'], image_filename))
+            reqcontent.image_path = 'images/' + image_filename
+        
+        if document:
+            document_filename = secure_filename(document.filename)
+            document_path = os.path.join(app.config['UPLOAD_DOCUMENT'], document_filename).replace('\\', '/')
+            document.save(os.path.join(app.config['UPLOAD_DOCUMENT'], document_filename))
+            reqcontent.document_path = 'documents/' + document_filename
+        
+        database.session.commit()
+        flash('Content updated successfully!', 'success')
+        return redirect('/contentupdate?id=' + content_id)
+    
+    courses = Course.query.all()
+    document = Document.query.all()
+    return render_template('contentupdate.html', reqcontent=reqcontent, courses=courses, documents=document)
+
+@app.route('/download_document/<int:document_id>')
+def download_document(document_id):
+    doc = Document.query.get_or_404(document_id)
+    # Logic to serve/download the document file
+    return send_from_directory(app.config['UPLOAD_FOLDER'],  os.path.basename(doc.document_path))
+if not os.path.exists(app.config['UPLOAD_FOLDER']):
+    os.makedirs(app.config['UPLOAD_FOLDER'])
+
+##############---------Content Library Route End---------################
+
+##############---------Video Route Start---------################
+@app.route('/add_videos', methods=['GET', 'POST'])
+def add_videos():
+    if 'role' not in session or session['role'] != 'teacher':
+        flash('You do not have access to this page.', 'danger')
+        return redirect('/login')
+
+    if request.method == 'POST':
+        video_title = request.form.get('video_title')
+        video_id = request.form.get('video_id')
+        vdate_str = request.form.get('video_date')
+
+        # Convert the string to a date object
+        try:
+            video_date = datetime.strptime(vdate_str, '%Y-%m-%d').date()
+        except ValueError:
+            return "Invalid date format. Please use YYYY-MM-DD."
+
+        thumbnail_path = f"https://img.youtube.com/vi/{video_id}/0.jpg"
+
+        # Create a new video item
+        new_video = Video(
+            video_title=video_title,
+            video_id=video_id,
+            video_date=video_date,
+            thumbnail_path=thumbnail_path
+        )
+        database.session.add(new_video)
+        database.session.commit()
+
+        flash('Video added successfully!', 'success')
+        return redirect('/add_videos')
+    else:
+        # Fetch the videos and render the template
+        all_video = Video.query.all()
+        return render_template('add_videos.html', all_video=all_video)
+@app.route('/embed_video', methods=['POST', 'GET'])
+def embed_video():
+    if request.method == 'POST':
+        video_id = request.form['video_id']
+        return render_template('ContentLibrary.html', video_id=video_id)
+
+    return render_template('ContentLibrary.html')
+
+@app.route('/videoupdate/<int:video_id>', methods=["GET", "POST"])
+def videoupdate(video_id):
+    video = Video.query.get_or_404(video_id)
+
+    if request.method == 'POST':
+        video.video_title = request.form['video_title']
+        video.video_id = request.form['video_id']
+        videodate_str = request.form.get('video_date')
+
+        video.video_date = datetime.strptime(videodate_str, '%Y-%m-%d').date()
+        
+        database.session.commit()
+        flash('Video updated successfully', 'success')
+        return redirect(url_for('add_videos'))  
+    
+    return render_template('videoupdate.html', video=video)
+
+
+@app.route('/videodelete', methods=['GET','POST'])
+def videodelete():
+    video_id = request.form.get('id')
+
+    video = Video.query.get_or_404(video_id)
+
+    database.session.delete(video)
+    database.session.commit()
+
+    return redirect(url_for('add_videos'))
+
+
 if __name__ == "__main__":
     app.run(debug=True)
