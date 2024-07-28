@@ -500,6 +500,5 @@ def videodelete():
 
     return redirect(url_for('add_videos'))
 
-# if __name__ == '__main__':
-#   # Run the application
-#   app.run()
+if __name__ == '__main__':
+  app.run()
