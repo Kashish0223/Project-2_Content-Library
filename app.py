@@ -10,7 +10,8 @@ import os
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'your_default_secret_key')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///library.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///library.db')
+# postgresql://library_sql_user:SVhrlpx5HWu17QBUvJAucjTmZgha78ZP@dpg-cqlrv3ggph6c738lman0-a.oregon-postgres.render.com/library_sql
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 database.init_app(app)
 migrate = Migrate(app, database)
@@ -323,10 +324,10 @@ def upload_document():
 def uploaded_document(filename):
     return render_template('uploaded_document.html', filename=filename)
 
-@app.route('/download_document/<int:document_id>')
-def download_document(document_id):
-    doc = Document.query.get_or_404(document_id)
-    return send_from_directory(app.config['UPLOAD_DOCUMENT'], os.path.basename(doc.document_path))
+# @app.route('/download_document/<int:document_id>')
+# def download_document(document_id):
+#     doc = Document.query.get_or_404(document_id)
+#     return send_from_directory(app.config['UPLOAD_DOCUMENT'], os.path.basename(doc.document_path))
 
 ##############---------Content Library Route Start---------################
 @app.route('/ContentLibrary')
