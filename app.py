@@ -1,4 +1,3 @@
-from multiprocessing.managers import Server
 from flask import Flask, render_template, request, redirect, send_from_directory, url_for, session, flash
 from extension import database
 from model import User, Course, Document, Module, Video
@@ -12,7 +11,7 @@ from waitress import serve
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'your_default_secret_key')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///library.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://library_sql_user:SVhrlpx5HWu17QBUvJAucjTmZgha78ZP@dpg-cqlrv3ggph6c738lman0-a.oregon-postgres.render.com/library_sql')
 # postgresql://library_sql_user:SVhrlpx5HWu17QBUvJAucjTmZgha78ZP@dpg-cqlrv3ggph6c738lman0-a.oregon-postgres.render.com/library_sql
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 database.init_app(app)
