@@ -1,3 +1,4 @@
+from multiprocessing.managers import Server
 from flask import Flask, render_template, request, redirect, send_from_directory, url_for, session, flash
 from extension import database
 from model import User, Course, Document, Module, Video
@@ -6,6 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from flask_migrate import Migrate
 import os
+from waitress import serve
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'your_default_secret_key')
@@ -540,4 +542,4 @@ def videodelete():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    serve(app, host='0.0.0.0', port=8000)

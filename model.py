@@ -4,10 +4,10 @@ from extension import database
 # Create class of table
 class User(database.Model):
     id = database.Column(database.Integer, primary_key=True, autoincrement=True)
-    username = database.Column(database.String(20), unique=True, nullable=False)
+    username = database.Column(database.String(120), unique=True, nullable=False)
     email = database.Column(database.String(120), unique=True, nullable=False)
-    password = database.Column(database.String(60), nullable=False)
-    role = database.Column(database.String(20), nullable=False, default='student')
+    password = database.Column(database.String(130), nullable=False)
+    role = database.Column(database.String(70), nullable=False, default='student')
 
 class Course(database.Model):
     id = database.Column(database.Integer, primary_key= True, autoincrement=True)
