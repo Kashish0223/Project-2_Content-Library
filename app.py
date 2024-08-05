@@ -11,7 +11,7 @@ from waitress import serve
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'your_default_secret_key')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://library_p9o0_user:FBeVgX8OZGLENBqUzW7bzj5xR1910WC8@dpg-cqnq063v2p9s73agp110-a.oregon-postgres.render.com/library_p9o0?sslmode=require')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://library_p9o0_user:FBeVgX8OZGLENBqUzW7bzj5xR1910WC8@dpg-cqnq063v2p9s73agp110-a.oregon-postgres.render.com/library_p9o0')
 # postgresql://library_sql_user:SVhrlpx5HWu17QBUvJAucjTmZgha78ZP@dpg-cqlrv3ggph6c738lman0-a.oregon-postgres.render.com/library_sql
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 database.init_app(app)
@@ -62,7 +62,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
-        if user and check_password_hash(user.password, password):
+        if user and user.password == password:
             session['username'] = user.username
             session['role'] = user.role
             flash('Login successful!', 'success')
@@ -536,6 +536,6 @@ def videodelete():
 
     return redirect(url_for('add_videos'))
 
-
 if __name__ == "__main__":
-    serve(app, host='0.0.0.0', port=8000)
+    app.run(debug=True)
+
