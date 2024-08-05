@@ -6,7 +6,7 @@ class User(database.Model):
     id = database.Column(database.Integer, primary_key=True, autoincrement=True)
     username = database.Column(database.String(50), unique=True, nullable=False)
     email = database.Column(database.String(50), unique=True, nullable=False)
-    password = database.Column(database.Text(40), nullable=False)
+    password = database.Column(database.Text, nullable=False)
     role = database.Column(database.String(30), nullable=False, default='student')
 
 class Course(database.Model):
