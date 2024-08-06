@@ -12,7 +12,7 @@ import os
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'your_default_secret_key')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://library_p9o0_user:FBeVgX8OZGLENBqUzW7bzj5xR1910WC8@dpg-cqnq063v2p9s73agp110-a.oregon-postgres.render.com/library_p9o0')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://library_vw8x_user:rDI7YCs4UPXkXmruQv13F9UU7kqDDpoy@dpg-cqp5gfggph6c73fhht5g-a.oregon-postgres.render.com/library_vw8x')
 # postgresql://library_sql_user:SVhrlpx5HWu17QBUvJAucjTmZgha78ZP@dpg-cqlrv3ggph6c738lman0-a.oregon-postgres.render.com/library_sql
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
