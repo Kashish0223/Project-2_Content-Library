@@ -1,6 +1,5 @@
 from extension import database
 
-
 # Create class of table
 class User(database.Model):
     id = database.Column(database.Integer, primary_key=True, autoincrement=True)
@@ -10,21 +9,21 @@ class User(database.Model):
     role = database.Column(database.String(30), nullable=False, default='student')
 
 class Course(database.Model):
-    id = database.Column(database.Integer, primary_key= True, autoincrement=True)
+    id = database.Column(database.Integer, primary_key= True)
     ctitle = database.Column(database.String(100), nullable= False)
-    cdescription = database.Column(database.String(300), nullable= False)
+    cdescription = database.Column(database.Text, nullable= False)
     c_date = database.Column(database.Date, nullable=False)
 
 class Module(database.Model):
-    id = database.Column(database.Integer, primary_key=True, autoincrement=True)
+    id = database.Column(database.Integer, primary_key=True)
     title = database.Column(database.String(100), nullable=False)
-    description = database.Column(database.String(300), nullable=False)
+    description = database.Column(database.Text, nullable=False)
     course_id = database.Column(database.Integer, database.ForeignKey('course.id'), nullable=False)
     course = database.relationship('Course', backref='modules')
     mod_date = database.Column(database.DateTime, nullable=False)
 
 class Document(database.Model):
-    id = database.Column(database.Integer, primary_key=True, autoincrement=True)
+    id = database.Column(database.Integer, primary_key=True)
     title = database.Column(database.String(100), nullable=False)
     description = database.Column(database.Text, nullable=False)
     image_path = database.Column(database.String(200), nullable=False)
