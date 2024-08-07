@@ -35,16 +35,6 @@ if not os.path.exists(app.config['UPLOAD_VIDEO']):
 if not os.path.exists(app.config['UPLOAD_DOCUMENT']):
     os.makedirs(app.config['UPLOAD_DOCUMENT'])
 
-if not app.debug:
-    import logging
-    from logging.handlers import RotatingFileHandler
-    handler = RotatingFileHandler('error.log', maxBytes=10000, backupCount=1)
-    handler.setLevel(logging.ERROR)
-    app.logger.addHandler(handler)
-
-with app.app_context():
-    database.create_all()
-
 @app.route('/index')
 def index():
     if 'role' not in session or session['role'] != 'teacher':
