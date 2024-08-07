@@ -12,7 +12,7 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
 #connect the flask app(server) with sqllite database
-os.environ['DATABASE_URL'] = 'postgresql://library_vw8x_user:rDI7YCs4UPXkXmruQv13F9UU7kqDDpoy@dpg-cqp5gfggph6c73fhht5g-a.oregon-postgres.render.com/library_vw8x'
+os.environ['DATABASE_URL'] = 'postgresql://library_d14z_user:upRONqgLWR6iIY1ikzOXWNAI2lFhrt1v@dpg-cqpqtnjqf0us73aobksg-a.oregon-postgres.render.com/library_d14z'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
 
