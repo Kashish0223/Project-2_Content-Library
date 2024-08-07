@@ -11,13 +11,13 @@ class User(database.Model):
 class Course(database.Model):
     id = database.Column(database.Integer, primary_key= True)
     ctitle = database.Column(database.String(100), nullable= False)
-    cdescription = database.Column(database.Text, nullable= False)
+    cdescription = database.Column(database.String(250), nullable= False)
     c_date = database.Column(database.Date, nullable=False)
 
 class Module(database.Model):
     id = database.Column(database.Integer, primary_key=True)
     title = database.Column(database.String(100), nullable=False)
-    description = database.Column(database.Text, nullable=False)
+    description = database.Column(database.String(600), nullable=False)
     course_id = database.Column(database.Integer, database.ForeignKey('course.id'), nullable=False)
     course = database.relationship('Course', backref='modules')
     mod_date = database.Column(database.DateTime, nullable=False)
@@ -25,7 +25,7 @@ class Module(database.Model):
 class Document(database.Model):
     id = database.Column(database.Integer, primary_key=True)
     title = database.Column(database.String(100), nullable=False)
-    description = database.Column(database.Text, nullable=False)
+    description = database.Column(database.String(650), nullable=False)
     image_path = database.Column(database.String(200), nullable=False)
     document_path = database.Column(database.String(200), nullable=False)
     course_id = database.Column(database.Integer, database.ForeignKey('course.id'), nullable=False)
