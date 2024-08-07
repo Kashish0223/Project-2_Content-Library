@@ -89,8 +89,8 @@
                     <div class="popBox">
                         <p class="card-text" style="display: none;">{{ doc.description }}</p>
                     </div>
-                    <a href="{{ url_for('static', document_id=doc.id) }}" class="btn btn-primary pulse"
-                        target="_blank">View Document</a>
+                 <a href="{{ url_for('static', filename=doc.document_path) }}" class="btn btn-primary pulse" target="_blank">View Document</a>
+
                 </div>
             </div>
         </div>
