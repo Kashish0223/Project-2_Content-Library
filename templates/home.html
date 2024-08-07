@@ -8,91 +8,20 @@
     <div class="col">
         <main>
             <h1>Available Courses</h1>
-
+            {% for course in courses %}
             <div class="course">
-                <h2>Web Development</h2>
-                <p>Learn the essentials of web development, including HTML, CSS, and JavaScript to create dynamic and
-                    responsive websites.</p>
+                <h2>{{ course.ctitle }}</h2>
+                <p>{{ course.cdescription }}</p>
                 <h3>Modules:</h3>
+                {% for module in course.modules %}
                 <div class="module">
-                    <h3>HTML Basics</h3>
-                    <p>Introduction to HTML for structuring web content.</p>
+                    <h3>{{ module.title }}</h3>
+                    <p>{{ module.description }}</p>
                 </div>
+                {% endfor %}
             </div>
-
-            <div class="course">
-                <h2>Machine Learning</h2>
-                <p>Explore the fundamentals of machine learning and its applications in data analysis and predictive
-                    modeling.</p>
-                <h3>Modules:</h3>
-                <div class="module">
-                    <h3>Exploratory Data Analysis (EDA)</h3>
-                    <p>Techniques for analyzing data sets to summarize their main characteristics.</p>
-                </div>
-            </div>
-
-            <div class="course">
-                <h2>Project Management</h2>
-                <p>Learn the principles and practices of project management, including planning, execution, and
-                    monitoring.</p>
-                <h3>Modules:</h3>
-                <div class="module">
-                    <h3>Project Planning</h3>
-                    <p>Understand how to effectively plan and execute projects.</p>
-                </div>
-            </div>
-
-            <div class="course">
-                <h2>Financial Accounting</h2>
-                <p>This course covers the fundamentals of financial accounting and reporting.</p>
-                <h3>Modules:</h3>
-                <div class="module">
-                    <h3>Financial Statement</h3>
-                    <p>Learn how to prepare and analyze financial statements.</p>
-                </div>
-            </div>
-
-            <div class="course">
-                <h2>Cybersecurity Essentials</h2>
-                <p>Understand the basics of cybersecurity and how to protect information systems.</p>
-                <h3>Modules:</h3>
-                <div class="module">
-                    <h3>Network Security</h3>
-                    <p>Learn about securing networks and protecting data from unauthorized access.</p>
-                </div>
-            </div>
-
-            <div class="course">
-                <h2>Digital Marketing</h2>
-                <p>Explore strategies for effective digital marketing, including SEO, social media, and content
-                    marketing.</p>
-                <h3>Modules:</h3>
-                <div class="module">
-                    <h3>Search Engine Optimization</h3>
-                    <p>Techniques to enhance website visibility on search engines.</p>
-                </div>
-            </div>
-
-            <div class="course">
-                <h2>Cloud Computing</h2>
-                <p>Learn about cloud technologies and their applications in business.</p>
-                <h3>Modules:</h3>
-                <div class="module">
-                    <h3>Cloud Service Models</h3>
-                    <p>Understand different cloud service models like IaaS, PaaS, and SaaS.</p>
-                </div>
-            </div>
-
-            <div class="course">
-                <h2>Public Speaking and Communication Skills</h2>
-                <p>Enhance your public speaking and communication abilities for effective presentations.</p>
-                <h3>Modules:</h3>
-                <div class="module">
-                    <h3>Presentation Skills</h3>
-                    <p>Learn techniques for delivering engaging and effective presentations.</p>
-                </div>
-            </div>
+            {% endfor %}
         </main>
     </div>
 </div>
-{% endblock main%}
+{% endblock main %}
