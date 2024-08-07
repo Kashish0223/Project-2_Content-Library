@@ -3,7 +3,7 @@ from flask import Flask, render_template, request,redirect, send_from_directory,
 from extension import database
 from model import User, Course, Document, Module, Video
 from werkzeug.utils import secure_filename
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash
 from datetime import datetime
 from flask_migrate import Migrate
 import os
@@ -19,12 +19,12 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 #create object of SQLAlchemy
 database.init_app(app)
 
-app.config['UPLOAD_FOLDER'] = 'static/images'
-app.config['UPLOAD_VIDEO'] = 'static/videos'
+app.config['UPLOAD_FOLDER'] = 'static/images/'
+app.config['UPLOAD_VIDEO'] = 'static/videos/'
 
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png','mp4'}
 
-app.config['UPLOAD_DOCUMENT'] = 'static/documents'
+app.config['UPLOAD_DOCUMENT'] = 'static/documents/'
 ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx', 'csv', 'xlsx', 'xls','ppt'}
 
 # Creating the routes
@@ -48,7 +48,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
-        if user and check_password_hash(user.password, password):
+        if user and user.password == password:
             session['username'] = user.username
             session['role'] = user.role
             flash('Login successful!', 'success')
@@ -71,8 +71,7 @@ def register():
             flash('All fields are required!', 'danger')
             return redirect('/register')
         
-        hashed_password = generate_password_hash(password, method='sha256')
-        new_user = User(username=username, email=email, password=hashed_password, role=role)
+        new_user = User(username=username, email=email, password=password, role=role)
         database.session.add(new_user)
         database.session.commit()
         flash('Registration successful! Please login.', 'success')
@@ -200,7 +199,7 @@ def add_course():
         
         cattitle = request.form.get('ctitle')
         catdescription = request.form.get('cdescription')
-        catdate_str = request.form.get('cdate')
+        catdate_str = request.form.get('c_date')
        
         try:
             catdate = datetime.strptime(catdate_str, '%Y-%m-%d').date()
@@ -208,7 +207,7 @@ def add_course():
             return "Invalid date format. Please use YYYY-MM-DD."
 
 
-        catadd = Course(ctitle=cattitle,cdescription=catdescription,cdate=catdate)
+        catadd = Course(ctitle=cattitle,cdescription=catdescription,c_date=catdate)
         database.session.add(catadd)
         database.session.commit()
          # returning the response
@@ -324,7 +323,7 @@ def add_content():
         #image file
         if image:
             image_filename = secure_filename(image.filename)
-            image_path = os.path.join('images', image_filename) 
+            image_path = os.path.join('images', image_filename).replace('\\', '/')
             full_image_path = os.path.join(app.config['UPLOAD_FOLDER'], image_filename)
             image.save(full_image_path)
         else:
@@ -333,7 +332,7 @@ def add_content():
         # document file
         if document:
             document_filename = secure_filename(document.filename)
-            document_path = os.path.join('documents', document_filename)
+            document_path = os.path.join('documents', document_filename).replace('\\', '/')
             full_document_path = os.path.join(app.config['UPLOAD_DOCUMENT'], document_filename)
             document.save(full_document_path)
         else:

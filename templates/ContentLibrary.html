@@ -17,7 +17,7 @@
             <option value="title">Title</option>
             <option value="date">Date Added</option>
         </select>
-    
+
         <label for="filter-options">Filter by Course:</label>
         <select id="filter-options">
             <option value="all">All</option>
@@ -30,37 +30,37 @@
             {% endif %}
         </select>
     </div>
-     <!-- Module Section -->
-     <h1 class="text-center" id="module">Our Modules</h1>
-     <div class="row">
-         {% for mod in allmodule %}
-         <div class="col-md-3 mb-4">
-             <div class="card h-100 library-item">
-                 <div class="card-body">
-                     {% for doc in documents %}
-                     {% if doc.course_id == mod.course_id %}
-                     <img src="{{ url_for('static', filename=doc.image_path) }}" class="card-img-top content-thumbnail"
-                         alt="{{ doc.cltitle }}" style="width:100px;height:100px;border-radius: 80px;margin-bottom:15px;"
-                         data-title="{{ mod.title }}" data-description="{{ mod.description }}">
-                     {% endif %}
-                     {% endfor %}
-                     <h5 class="card-title">{{ mod.title }}</h5>
-                     <div class="description-container">
-                         <p class="short-desc">{{ mod.description[:100] }}...</p>
-                     </div>
-                 </div>
-             </div>
-         </div>
-         {% endfor %}
-     </div>
-     <div id="contentModal" class="modal">
-         <div class="modal-content" style="width: 40%;">
-             <span class="close">&times;</span>
-             <h5 id="modal-title"></h5>
-             <p id="modal-description"></p>
-         </div>
-     </div>
-     
+    <!-- Module Section -->
+    <h1 class="text-center" id="module">Our Modules</h1>
+    <div class="row">
+        {% for mod in allmodule %}
+        <div class="col-md-3 mb-4">
+            <div class="card h-100 library-item">
+                <div class="card-body">
+                    {% for doc in documents %}
+                    {% if doc.course_id == mod.course_id %}
+                    <img src="{{ url_for('static', filename=doc.image_path) }}" class="card-img-top content-thumbnail"
+                        alt="{{ doc.cltitle }}" style="width:100px;height:100px;border-radius: 80px;margin-bottom:15px;"
+                        data-title="{{ mod.title }}" data-description="{{ mod.description }}">
+                    {% endif %}
+                    {% endfor %}
+                    <h5 class="card-title">{{ mod.title }}</h5>
+                    <div class="description-container">
+                        <p class="short-desc">{{ mod.description[:100] }}...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div id="contentModal" class="modal">
+        <div class="modal-content" style="width: 40%;">
+            <span class="close">&times;</span>
+            <h5 id="modal-title"></h5>
+            <p id="modal-description"></p>
+        </div>
+    </div>
+
     <!-- Video Section -->
     <h1 class="text-center" id="video">Videos</h1>
     <div class="row" style="padding:0px 15px;">
@@ -81,8 +81,9 @@
         {% for doc in documents %}
         <div class="col-md-3 mb-4">
             <div class="card h-100 library-item" data-course-id="{{ doc.course_id }}" data-date="{{ doc.docdate }}">
-                <img src="{{ url_for('static', filename=doc.image_path) }}" class="card-img-top"
-                    alt="{{ doc.cltitle }}">
+                <!-- <img src="{{ url_for('static', filename=doc.image_path) }}" class="card-img-top"
+                    alt="{{ doc.cltitle }}"> -->
+                <img src="{{ url_for('static', filename=doc.image_path) }}" alt="{{ doc.title }}">
                 <div class="card-body">
                     <h5 class="card-title">{{ doc.cltitle }}</h5>
                     <div class="popBox">
