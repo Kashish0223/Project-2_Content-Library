@@ -40,7 +40,8 @@ def home():
     if 'role' not in session or session['role'] != 'student':
         flash('You do not have access to this page.', 'danger')
         return redirect('/login')
-    return render_template("home.html")
+    courses = Course.query.all()
+    return render_template('home.html', courses=courses)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
