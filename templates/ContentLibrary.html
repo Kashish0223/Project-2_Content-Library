@@ -81,16 +81,13 @@
         {% for doc in documents %}
         <div class="col-md-3 mb-4">
             <div class="card h-100 library-item" data-course-id="{{ doc.course_id }}" data-date="{{ doc.docdate }}">
-                <!-- <img src="{{ url_for('static', filename=doc.image_path) }}" class="card-img-top"
-                    alt="{{ doc.cltitle }}"> -->
                 <img src="{{ url_for('static', filename=doc.image_path) }}" alt="{{ doc.title }}">
                 <div class="card-body">
                     <h5 class="card-title">{{ doc.cltitle }}</h5>
                     <div class="popBox">
                         <p class="card-text" style="display: none;">{{ doc.description }}</p>
                     </div>
-                 <a href="{{ url_for('static', filename=doc.document_path) }}" class="btn btn-primary pulse" target="_blank">View Document</a>
-
+                    <a href="{{ url_for('static', filename=doc.document_path) }}" class="btn btn-primary pulse" target="_blank">View Document</a>
                 </div>
             </div>
         </div>
